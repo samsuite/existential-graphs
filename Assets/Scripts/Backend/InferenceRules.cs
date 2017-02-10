@@ -21,7 +21,7 @@ public class InferenceRules : MonoBehaviour {
         GameObject newObj = new GameObject();
         Node newCut = newObj.AddComponent<Node>();
 
-        newCut.initAsCut(parameters.vectorline);
+        //newCut.initAsCut(parameters.vectorline);
 
         newObj.transform.parent = mom.transform;
         newCut.setNameAndPos(parameters.variable_name, parameters.posX, parameters.posY);

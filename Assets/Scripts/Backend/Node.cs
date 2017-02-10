@@ -1,5 +1,4 @@
-﻿using Vectrosity;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -13,8 +12,8 @@ public class Node : MonoBehaviour {
     public string value;
 
     // if this is a cut, there's a vectorline associated with it.
-    [HideInInspector]
-    public VectorLine vecline;
+    //[HideInInspector]
+    //public VectorLine vecline;
 
     // a unique ID to identify this node.
     // the way CurryBoy did this was totally ludicrous so I'm doing it a different way!
@@ -46,6 +45,7 @@ public class Node : MonoBehaviour {
     /// INITIALIZATION
     // this should probably also add a component that renders circles or variable names or whatever.
 
+    /*
     // initialize this node as a cut
     public void initAsCut(VectorLine line) {
         if (!is_initialized){
@@ -58,7 +58,7 @@ public class Node : MonoBehaviour {
         else {
             Debug.Log("Uh oh -- tried to initialize the same node more than once.");
         }
-    }
+    }*/
 
     // initialize this node as a variable
     public void initAsVar(string val) {

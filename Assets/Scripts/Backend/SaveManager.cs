@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Vectrosity;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -131,17 +130,17 @@ public class SaveManager : MonoBehaviour {
         Node n;
         
         if (save_root.type == node_type.Cut) {
-            n = circle_man.add_circle_of_size(node_root, save_root.position, save_root.radius, save_root.offset).GetComponent<Node>();
+            //n = circle_man.add_circle_of_size(node_root, save_root.position, save_root.radius, save_root.offset).GetComponent<Node>();
             //n.setNameAndPos(save_root.name, save_root.position.x, save_root.position.y);
 
-            VectorLine current_line = node_root.vecline;
+            //VectorLine current_line = node_root.vecline;
 
 
 
-            print("num points: "+current_line.points3.Count);
+            //print("num points: "+current_line.points3.Count);
 
-            current_line.MakeCircle (node_root.transform.position, save_root.radius);
-			current_line.Draw();
+            //current_line.MakeCircle (node_root.transform.position, save_root.radius);
+			//current_line.Draw();
         }
         else {
             Params p = new Params();
@@ -154,7 +153,7 @@ public class SaveManager : MonoBehaviour {
         
 
         for (int i = 0; i < save_root.children.Count; i++){
-            loadStructureToHierarchy(save_root.children[i], n);
+            //loadStructureToHierarchy(save_root.children[i], n);
         }
 
     }

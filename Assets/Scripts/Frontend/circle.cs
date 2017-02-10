@@ -1,10 +1,10 @@
-﻿using Vectrosity;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class circle: MonoBehaviour {
 
+    /*
     public float min_radius = 0.5f;
 
 	Vector3 point_touched;
@@ -211,13 +211,13 @@ public class circle: MonoBehaviour {
                         }
                     }
 
-                    /*
+                    
                     // if we started dragging in one circle and ended in another
                     if ((orig_hit && !hit) || (!orig_hit && hit) || (orig_hit && hit) && clicked_circle != hit.transform.gameObject ){
                         print ("cut interrupted");
                         should_cancel_circle = true;
                     }
-                    */
+                    
 
                     // TODO:
                     // also need to test if the circles are intersecting in some other way
@@ -387,6 +387,6 @@ public class circle: MonoBehaviour {
         VectorLine.Destroy (ref current_line, current_object);
         circles.RemoveAt(circles.Count-1);
     }
-
+    */
 
 }

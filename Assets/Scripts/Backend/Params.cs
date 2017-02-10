@@ -1,5 +1,4 @@
-﻿using Vectrosity;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class Params {
@@ -15,5 +14,5 @@ public class Params {
     public string variable_name;
     public float posX;
     public float posY;
-    public VectorLine vectorline;
+    //public VectorLine vectorline;
 }
