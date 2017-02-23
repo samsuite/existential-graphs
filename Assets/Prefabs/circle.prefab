@@ -140,11 +140,11 @@ MonoBehaviour:
   num_points: 100
   line_width: 0.03
   quad: {fileID: 4568005244610318}
-  highlighted: 0
   intersecting: 0
   normal_color: {r: 0.1397059, g: 0.1397059, b: 0.1397059, a: 1}
   highlighted_color: {r: 0, g: 0.58431375, b: 1, a: 1}
   error_color: {r: 1, g: 0.21176471, b: 0.21176471, a: 1}
+  highlighted_error_color: {r: 1, g: 0.3897059, b: 0.3897059, a: 1}
 --- !u!120 &120395678816943052
 LineRenderer:
   m_ObjectHideFlags: 1

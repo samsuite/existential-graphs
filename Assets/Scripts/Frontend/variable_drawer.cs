@@ -13,11 +13,20 @@ public class variable_drawer : MonoBehaviour {
     public Color normal_color = Color.black;
     public Color highlighted_color = Color.blue;
     public Color error_color = Color.red;
+    public Color highlighted_error_color = Color.magenta;
+
 
     void Update () {
 
         if (intersecting){
-            set_color(error_color);
+
+            if (node_manager.currently_selected_variable == this){
+                set_color(highlighted_error_color);
+            }
+            else {
+                set_color(error_color);
+            }
+
         }
         else if (node_manager.currently_selected_variable == this){
             set_color(highlighted_color);

@@ -298,7 +298,6 @@ GameObject:
   - component: {fileID: 2126971803}
   - component: {fileID: 2126971802}
   - component: {fileID: 2126971801}
-  - component: {fileID: 2126971806}
   - component: {fileID: 2126971807}
   m_Layer: 0
   m_Name: camera
@@ -377,17 +376,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2126971806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2126971800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 506708ef902fc8940b93a6d403ec6865, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2126971807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,7 +392,7 @@ MonoBehaviour:
   offsetScale: 0.2
   blurRadius: 18
   edgeThresholdMin: 0.01
-  edgeThreshold: 0
+  edgeThreshold: 0.1
   edgeSharpness: 10
   dlaaSharp: 0
   ssaaShader: {fileID: 4800000, guid: b3728d1488b02490cbd196c7941bf1f8, type: 3}
