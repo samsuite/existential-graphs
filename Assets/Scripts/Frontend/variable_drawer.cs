@@ -16,17 +16,39 @@ public class variable_drawer : MonoBehaviour {
 
     void Update () {
 
-        if (node_manager.currently_selected_variable == this){
-            set_color(highlighted_color);
-        }
-        else if (intersecting){
+        if (intersecting){
             set_color(error_color);
+        }
+        else if (node_manager.currently_selected_variable == this){
+            set_color(highlighted_color);
         }
         else {
             set_color(normal_color);
         }
 
 
+        // check if we're intersecting with a cut
+        intersecting = false;
+        for( int i = 0; i < node_manager.all_cuts.Count; i++ )
+        {
+            circle_drawer cir  = node_manager.all_cuts[i];
+
+            if (node_manager.intersect(cir, this)){
+                intersecting = true;
+            }
+        }
+        
+        // check if we're intersecting with a variable
+        for( int i = 0; i < node_manager.all_vars.Count; i++ )
+        {
+            variable_drawer var  = node_manager.all_vars[i];
+
+            if (this != var){
+                if (node_manager.intersect(this, var)){
+                    intersecting = true;
+                }
+            }
+        }
     }
 
 
@@ -38,4 +60,5 @@ public class variable_drawer : MonoBehaviour {
     public void set_color(Color col){
         var_name.color = col;
     }
+
 }

@@ -27,28 +27,41 @@ public class circle_drawer : MonoBehaviour {
 	}
 
     void Update () {
+
+        // technically we don't need to redraw this every frame, but that's actually a pretty negligible optimization (i tried it) and it introduces some annoying bugs.
+        // so whatever. no need to prematurely optimize
         redraw_circle();
 
-        if (node_manager.currently_selected_circle == this){
-            set_color(highlighted_color);
-        }
-        else if (intersecting){
+        if (intersecting){
             set_color(error_color);
+        }
+        else if (node_manager.currently_selected_circle == this){
+            set_color(highlighted_color);
         }
         else {
             set_color(normal_color);
         }
 
-
+        // check if we're intersecting with a cut
         intersecting = false;
         for( int i = 0; i < node_manager.all_cuts.Count; i++ )
         {
             circle_drawer cir  = node_manager.all_cuts[i];
 
             if (this != cir){
-                if (intersects_with(cir)){
+                if (node_manager.intersect(this, cir)){
                     intersecting = true;
                 }
+            }
+        }
+
+        // check if we're intersecting with a variable
+        for( int i = 0; i < node_manager.all_vars.Count; i++ )
+        {
+            variable_drawer var  = node_manager.all_vars[i];
+
+            if (node_manager.intersect(this, var)){
+                intersecting = true;
             }
         }
 
@@ -71,30 +84,5 @@ public class circle_drawer : MonoBehaviour {
     public void set_color (Color col){
         lines.startColor = col;
         lines.endColor = col;
-    }
-
-    // does this other circle intersect with me (doesn't count if circles are concentric)
-    bool intersects_with (circle_drawer other){
-
-        float dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.y), new Vector2(other.transform.position.x, other.transform.position.y));
-        float threshold = 0.05f;
-
-        if (dist > (radius + other.radius) + threshold) {
-            // no overlap
-            return false;
-        }
-        else if (dist <= (radius - other.radius) - threshold) 
-        {
-            // completely inside
-            return false;
-        }
-        else if (dist <= (other.radius - radius) - threshold) 
-        {
-            // completely inside
-            return false;
-        }
-        
-        // overlap
-        return true;
     }
 }

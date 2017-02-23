@@ -12,23 +12,25 @@ public class node_manager : MonoBehaviour {
     public static circle_drawer currently_selected_circle;
     public static variable_drawer currently_selected_variable;
 
-    bool currently_scaling_cut = false;
-    bool currently_moving_cut = false;
-    bool currently_moving_var = false;
+    [HideInInspector]
+    public static bool currently_scaling_cut = false;
+    [HideInInspector]
+    public static bool currently_moving_cut = false;
+    [HideInInspector]
+    public static bool currently_moving_var = false;
 
     Vector2 mouse_position;
     Vector2 clicked_point;
     Vector2 offset;
 
-    float min_circle_radius = 0.5f;
-    float selection_width = 0.05f;
-    float variable_selection_radius = 0.3f;
+    public static float min_circle_radius = 0.5f;
+    public static float selection_width = 0.05f;
+    public static float variable_selection_radius = 0.25f;
 
     void Update () {
 
         // get the 2d worldspace position of the mouse
         mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-
 
 
         // ok, what are we doing right now?
@@ -49,7 +51,7 @@ public class node_manager : MonoBehaviour {
             currently_selected_circle.transform.position = new Vector3(offset.x+mouse_position.x, offset.y+mouse_position.y, 0f);
 
             // if the player releases the left mouse button
-            if (!Input.GetMouseButton(0)){
+            if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1)){
                 currently_moving_cut = false;
             }
 
@@ -59,7 +61,7 @@ public class node_manager : MonoBehaviour {
             currently_selected_variable.transform.position = new Vector3(offset.x+mouse_position.x, offset.y+mouse_position.y, 0f);
 
             // if the player releases the left mouse button
-            if (!Input.GetMouseButton(0)){
+            if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1)){
                 currently_moving_var = false;
             }
         }
@@ -108,13 +110,26 @@ public class node_manager : MonoBehaviour {
                     AddCircle(mouse_position);
                 }
             }
+
             if (Input.GetMouseButtonDown(1)){
+                // we right-clicked. do we have a circle selected? if so, scale it. otherwise, make a new variable
 
                 if (currently_selected_circle) {
                     currently_scaling_cut = true;
                 }
-                else {
-                    AddVariable(mouse_position, "Q");
+                else if (!currently_selected_variable){ // if we're not selecting a variable already
+                    AddVariable(mouse_position, "Q");   // add a new one
+                }
+            }
+
+            if (Input.GetMouseButtonDown(2)){
+                // we middle-clicked. do we have anything selected? if so, delete it
+
+                if (currently_selected_circle) {
+                    RemoveCircle(currently_selected_circle);
+                }
+                else if (currently_selected_variable) {
+                    RemoveVariable(currently_selected_variable);
                 }
             }
         }
@@ -137,5 +152,84 @@ public class node_manager : MonoBehaviour {
         currently_selected_variable = Instantiate(variable_prefab, new Vector3(pos.x,pos.y,0f), Quaternion.identity).GetComponent<variable_drawer>();
         all_vars.Add(currently_selected_variable);
         currently_selected_variable.set_text(name);
+
+        currently_moving_var = true;
+        clicked_point = mouse_position;
+        offset = Vector2.zero;
+    }
+
+    // delete a circle and remove it from the list
+    void RemoveCircle(circle_drawer cir)
+    {
+        all_cuts.Remove(cir);
+        Destroy(cir.gameObject);
+    }
+
+    // delete a variable and remove it from the list
+    void RemoveVariable(variable_drawer var)
+    {
+        all_vars.Remove(var);
+        Destroy(var.gameObject);
+    }
+
+
+    // does this other circle intersect with this other circle?
+    public static bool intersect (circle_drawer cir_a, circle_drawer cir_b){
+
+        float dist = Vector2.Distance(new Vector2(cir_a.transform.position.x, cir_a.transform.position.y), new Vector2(cir_b.transform.position.x, cir_b.transform.position.y));
+        float threshold = 0.05f;
+
+        if (dist > (cir_a.radius + cir_b.radius) + threshold) {
+            // no overlap
+            return false;
+        }
+        else if (dist <= (cir_a.radius - cir_b.radius) - threshold) 
+        {
+            // b is completely inside a
+            return false;
+        }
+        else if (dist <= (cir_b.radius - cir_a.radius) - threshold) 
+        {
+            // a is completely inside b
+            return false;
+        }
+        
+        // we got overlap
+        return true;
+    }
+
+    // does this circle intersect with this variable?
+    public static bool intersect (circle_drawer cir, variable_drawer var){
+
+        float dist = Vector2.Distance(new Vector2(cir.transform.position.x, cir.transform.position.y), new Vector2(var.transform.position.x, var.transform.position.y));
+        float threshold = 0.05f;
+
+        if (dist > (cir.radius + variable_selection_radius) + threshold) {
+            // no overlap
+            return false;
+        }
+        else if (dist <= (cir.radius - variable_selection_radius) - threshold)
+        {
+            // variable is completely inside circle
+            return false;
+        }
+        
+        // we got overlap
+        return true;
+    }
+
+    // does this variable intersect with this other variable?
+    public static bool intersect (variable_drawer var_a, variable_drawer var_b){
+
+        float dist = Vector2.Distance(new Vector2(var_a.transform.position.x, var_a.transform.position.y), new Vector2(var_b.transform.position.x, var_b.transform.position.y));
+        float threshold = 0.05f;
+
+        if (dist > (variable_selection_radius*2) + threshold) {
+            // no overlap
+            return false;
+        }
+
+        // we got overlap
+        return true;
     }
 }
