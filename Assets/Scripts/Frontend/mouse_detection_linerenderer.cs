@@ -4,36 +4,45 @@ using UnityEngine;
 
 public class mouse_detection_linerenderer : MonoBehaviour {
 
-    // Use this for initialization
-
     System.Type circle_type = typeof(linerenderer_circle);
 
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-        if(Input.GetMouseButtonDown(0))
+	void Update ()
+    {
+        /*if(Input.GetMouseButtonDown(0))
         {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero); ;
-            //print("cuh lick: " + (Input.mousePosition).ToString());
-            print("Converted: " + hit.point);
-
             Object[] circles = Object.FindObjectsOfType(circle_type);
 
             for( int i = 0; i < circles.Length; i++ )
             {
                 linerenderer_circle cir  = circles[i] as linerenderer_circle;
-                print("\t[" + i.ToString() + "] - " + cir.radius.ToString());
+                Vector2 center = new Vector2(cir.transform.position.x, cir.transform.position.y);
+                Vector2 clicked_point = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
-                if( Mathf.Abs(Vector2.Distance(cir.center, hit.point) - cir.radius) < .1f )
+                if( Mathf.Abs(Vector2.Distance(center, clicked_point) - cir.radius) < .1f )
                 {
                     print("and we clicked on it");
                 }
             }
 
+        }*/
+
+
+
+        Object[] circles = Object.FindObjectsOfType(circle_type);
+
+        for( int i = 0; i < circles.Length; i++ )
+        {
+            linerenderer_circle cir  = circles[i] as linerenderer_circle;
+            Vector2 center = new Vector2(cir.transform.position.x, cir.transform.position.y);
+            Vector2 clicked_point = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+
+            if( Mathf.Abs(Vector2.Distance(center, clicked_point) - cir.radius) < 0.1f ) {
+                cir.highlighted = true;
+            }
+            else {
+                cir.highlighted = false;
+            }
         }
+
 	}
 }

@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: fill
-  m_Shader: {fileID: 4800000, guid: 03829c86d7f45d9448fdad8f1b6b2d0a, type: 3}
+  m_Name: cut effect
+  m_Shader: {fileID: 4800000, guid: 38d6d671aa470a44cb05d670d4b6adf3, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -46,9 +46,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
+        name: _EvenTex
+      second:
+        m_Texture: {fileID: 2800000, guid: cc9498139f6c1c24192ce8691233a33c, type: 3}
+        m_Scale: {x: 3, y: 3}
+        m_Offset: {x: 0, y: 0}
+    - first:
         name: _MainTex
       second:
-        m_Texture: {fileID: 2800000, guid: 2fd3031fb9304ed40b7cf59d07ce2116, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - first:
@@ -62,6 +68,12 @@ Material:
       second:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - first:
+        name: _OddTex
+      second:
+        m_Texture: {fileID: 2800000, guid: 150137789d858b04a86ad48bd6480422, type: 3}
+        m_Scale: {x: 3, y: 3}
         m_Offset: {x: 0, y: 0}
     - first:
         name: _ParallaxMap
@@ -121,7 +133,7 @@ Material:
     m_Colors:
     - first:
         name: _Color
-      second: {r: 0.58823526, g: 0.58823526, b: 0.58823526, a: 1}
+      second: {r: 1, g: 1, b: 1, a: 1}
     - first:
         name: _EmissionColor
       second: {r: 0, g: 0, b: 0, a: 1}
