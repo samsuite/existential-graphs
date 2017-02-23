@@ -22,6 +22,7 @@ public class node_manager : MonoBehaviour {
 
     float min_circle_radius = 0.5f;
     float selection_width = 0.05f;
+    float variable_selection_radius = 0.3f;
 
     void Update () {
 
@@ -34,10 +35,10 @@ public class node_manager : MonoBehaviour {
         if (currently_scaling_cut)         // we're in the middle of scaling a cut
         {
             // the circle radius is the distance to the mouse -- unless the cut is too small, in which case it snaps to the min size
-            currently_selected_circle.radius = Mathf.Max(Vector2.Distance(mouse_position, clicked_point), min_circle_radius);
+            currently_selected_circle.radius = Mathf.Max(Vector2.Distance(mouse_position, currently_selected_circle.transform.position), min_circle_radius);
             
             // if the player releases the left mouse button
-            if (!Input.GetMouseButton(0)){
+            if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1)){
                 currently_scaling_cut = false;
                 currently_selected_circle = null;
             }
@@ -50,21 +51,26 @@ public class node_manager : MonoBehaviour {
             // if the player releases the left mouse button
             if (!Input.GetMouseButton(0)){
                 currently_moving_cut = false;
-                currently_selected_circle = null;
             }
 
         }
         else if (currently_moving_var)    // we're in the middle of moving a variable
         {
-            
+            currently_selected_variable.transform.position = new Vector3(offset.x+mouse_position.x, offset.y+mouse_position.y, 0f);
+
+            // if the player releases the left mouse button
+            if (!Input.GetMouseButton(0)){
+                currently_moving_var = false;
+            }
         }
         else                               // we're not editing anything right now, so we can start
         {
-            // is the mouse on the edge of a circle? if so, select it
+            // is the mouse on the edge of a circle or variable? if so, select it. variable have priority over circles
             currently_selected_circle = null;
+            currently_selected_variable = null;
             for( int i = 0; i < all_cuts.Count; i++ )
             {
-                circle_drawer cir  = node_manager.all_cuts[i];
+                circle_drawer cir = all_cuts[i];
                 Vector2 center = new Vector2(cir.transform.position.x, cir.transform.position.y);
 
                 if( Mathf.Abs(Vector2.Distance(center, mouse_position) - cir.radius) < selection_width ) {
@@ -72,23 +78,44 @@ public class node_manager : MonoBehaviour {
                 }
             }
 
+            for( int i = 0; i < all_vars.Count; i++ )
+            {
+                variable_drawer var = all_vars[i];
+                Vector2 center = new Vector2(var.transform.position.x, var.transform.position.y);
+
+                if( Vector2.Distance(center, mouse_position) < variable_selection_radius ) {
+                    currently_selected_variable = var;
+                    currently_selected_circle = null;   // even if we are over a circle, we're over a variable so we don't care lol. deselect the circle
+                }
+            }
 
 
 
             if (Input.GetMouseButtonDown(0)){
-                // we clicked. do we have a circle selected? if so, move that circle. otherwise, make a new one
+                // we clicked. do we have anything selected? if so, move that. otherwise, make a new circle
 
                 if (currently_selected_circle) {
                     currently_moving_cut = true;
                     clicked_point = mouse_position;
                     offset = new Vector2(currently_selected_circle.transform.position.x,currently_selected_circle.transform.position.y) - clicked_point;
                 }
+                else if (currently_selected_variable) {
+                    currently_moving_var = true;
+                    clicked_point = mouse_position;
+                    offset = new Vector2(currently_selected_variable.transform.position.x,currently_selected_variable.transform.position.y) - clicked_point;
+                }
                 else {
                     AddCircle(mouse_position);
                 }
             }
             if (Input.GetMouseButtonDown(1)){
-                AddVariable(mouse_position, "Q");
+
+                if (currently_selected_circle) {
+                    currently_scaling_cut = true;
+                }
+                else {
+                    AddVariable(mouse_position, "Q");
+                }
             }
         }
     }
@@ -109,7 +136,6 @@ public class node_manager : MonoBehaviour {
     {    
         currently_selected_variable = Instantiate(variable_prefab, new Vector3(pos.x,pos.y,0f), Quaternion.identity).GetComponent<variable_drawer>();
         all_vars.Add(currently_selected_variable);
-
         currently_selected_variable.set_text(name);
     }
 }
