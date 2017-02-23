@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent (typeof (LineRenderer))]
-public class linerenderer_circle : MonoBehaviour {
-
-    System.Type circle_type = typeof(linerenderer_circle);
+public class circle_drawer : MonoBehaviour {
 
     public float radius = 1;
     public int num_points = 100;
@@ -16,12 +14,11 @@ public class linerenderer_circle : MonoBehaviour {
     public Transform quad;
 
     [HideInInspector]
-    public bool highlighted = false;
-    [HideInInspector]
     public bool intersecting = false;
 
     public Color normal_color = Color.black;
     public Color highlighted_color = Color.blue;
+    public Color error_color = Color.red;
 
 
 	void Start () {
@@ -32,21 +29,21 @@ public class linerenderer_circle : MonoBehaviour {
     void Update () {
         redraw_circle();
 
-        if (highlighted){
+        if (node_manager.currently_selected_circle == this){
             set_color(highlighted_color);
         }
         else if (intersecting){
-            set_color(Color.red);
+            set_color(error_color);
         }
         else {
             set_color(normal_color);
         }
 
-        Object[] circles = Object.FindObjectsOfType(circle_type);
 
         intersecting = false;
-        for( int i = 0; i < circles.Length; i++ ){
-            linerenderer_circle cir  = circles[i] as linerenderer_circle;
+        for( int i = 0; i < node_manager.all_cuts.Count; i++ )
+        {
+            circle_drawer cir  = node_manager.all_cuts[i];
 
             if (this != cir){
                 if (intersects_with(cir)){
@@ -54,6 +51,7 @@ public class linerenderer_circle : MonoBehaviour {
                 }
             }
         }
+
     }
 
     void redraw_circle () {
@@ -76,7 +74,7 @@ public class linerenderer_circle : MonoBehaviour {
     }
 
     // does this other circle intersect with me (doesn't count if circles are concentric)
-    bool intersects_with (linerenderer_circle other){
+    bool intersects_with (circle_drawer other){
 
         float dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.y), new Vector2(other.transform.position.x, other.transform.position.y));
         float threshold = 0.05f;

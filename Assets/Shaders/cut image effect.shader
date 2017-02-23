@@ -56,16 +56,16 @@
 			{
 				i.uv.y = 1-i.uv.y;
 				fixed4 col = tex2D(_FillPrepassTex, i.uv);
-				// just invert the colors
-				//col = 1 - col;
+				
+				fixed4 outcol = 0;
 
-				if (col.r > 0.5){
-					float2 screen_uv = (i.e_uv * _ScreenParams.xy)/100.0;
-					return tex2D(_EvenTex, screen_uv);
-				}
+				float2 even_uv = (i.e_uv * _ScreenParams.xy)/100.0;
+				outcol += (col) * tex2D(_EvenTex, even_uv);
 
-				float2 screen_uv = (i.o_uv * _ScreenParams.xy)/100.0;
-				return tex2D(_OddTex, screen_uv);
+				float2 odd_uv = (i.o_uv * _ScreenParams.xy)/100.0;
+				outcol += (1-col) * tex2D(_OddTex, odd_uv);
+
+				return outcol;
 			}
 			ENDCG
 		}

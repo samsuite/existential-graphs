@@ -13,12 +13,12 @@ public class SaveManager : MonoBehaviour {
 
     Node tree_root;
     SaveNode root_save_node;
-    circle circle_man;
+    //circle circle_man;
 
     void Start () {
         string file_name = "test tree";
         tree_root = GameObject.FindGameObjectWithTag("ROOT").GetComponent<Node>();
-        circle_man = GameObject.FindGameObjectWithTag("CircleManager").GetComponent<circle>();
+        //circle_man = GameObject.FindGameObjectWithTag("CircleManager").GetComponent<circle>();
     }
 
 
