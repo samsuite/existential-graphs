@@ -14,7 +14,7 @@ public class Tree
         Properties and Fields
     */
 
-    public Node root { get; }
+    public IsoNode root { get; }
 
     /*
         Constructor(s)
@@ -22,10 +22,10 @@ public class Tree
 
     public Tree()
     {
-        this.root = new Node();
+        this.root = new IsoNode();
     }
 
-    public Tree(Node r)
+    public Tree(IsoNode r)
     {
         this.root = r;
     }
@@ -43,17 +43,17 @@ public class Tree
 
     */
 
-    private int Height_Helper(Node root, int height)
+    private int Height_Helper(IsoNode root, int height)
     {
         if(root.Is_Leaf())
         {
             return height;
         }
 
-        List<Node> children = root.children;
+        List<IsoNode> children = root.children;
         int max_so_far = 0;
 
-        foreach(Node child in children)
+        foreach(IsoNode child in children)
         {
             max_so_far = Math.Max(max_so_far, Height_Helper(child, height + 1));
         }
@@ -81,19 +81,19 @@ public class Tree
         Description:  Helper Function to handle retrieving nodes by level in tree (DFS)
 
     */
-    private void Nodes_By_Level_Helper(Node root, int level, ref Dictionary<int, List<Node> > levels)
+    private void Nodes_By_Level_Helper(IsoNode root, int level, ref Dictionary<int, List<IsoNode> > levels)
     {
 
         if(!levels.ContainsKey(level))
         {
-            levels[level] = new List<Node>();
+            levels[level] = new List<IsoNode>();
         }
 
         levels[level].Add(root);
 
-        List<Node> children = root.children;
+        List<IsoNode> children = root.children;
 
-        foreach(Node child in children)
+        foreach(IsoNode child in children)
         {
 
             Nodes_By_Level_Helper(child, level + 1, ref levels);
@@ -110,10 +110,10 @@ public class Tree
         Description:  Returns a Dictionary with mappings of level to nodes by level
 
     */
-    public Dictionary<int, List<Node> > Nodes_By_Level()
+    public Dictionary<int, List<IsoNode> > Nodes_By_Level()
     {
 
-        Dictionary<int, List<Node> > levels = new Dictionary<int, List<Node> >();
+        Dictionary<int, List<IsoNode> > levels = new Dictionary<int, List<IsoNode> >();
         Nodes_By_Level_Helper(this.root, 0, ref levels);
         return levels;
     }
@@ -127,7 +127,7 @@ public class Tree
         Description:    Recursively traverses the tree, updating labels on the way up
 
     */
-    public void Labels_By_Level_Helper(Node root, ref Dictionary<Node, string> labels)
+    public void Labels_By_Level_Helper(IsoNode root, ref Dictionary<IsoNode, string> labels)
     {
 
         if(root.Is_Leaf())
@@ -137,9 +137,9 @@ public class Tree
         }
         else
         {
-            List<Node> children = root.children;
+            List<IsoNode> children = root.children;
 
-            foreach(Node child in children)
+            foreach(IsoNode child in children)
             {
                 Labels_By_Level_Helper(child, ref labels);
             }
@@ -147,7 +147,7 @@ public class Tree
             List<string> sorted_children = new List<string>();
 
 
-            foreach(Node child in children)
+            foreach(IsoNode child in children)
             {
 
                 sorted_children.Add(labels[child]);
@@ -180,9 +180,9 @@ public class Tree
         Description:    Returns a Dictionary containing mappings from nodes to canonical names
 
     */
-    public Dictionary<Node, string> Labels_By_Level()
+    public Dictionary<IsoNode, string> Labels_By_Level()
     {
-        Dictionary<Node, string> labels = new Dictionary<Node, string>();
+        Dictionary<IsoNode, string> labels = new Dictionary<IsoNode, string>();
         this.Labels_By_Level_Helper(this.root, ref labels);
         return labels;
 
@@ -198,10 +198,10 @@ public class Tree
     public bool Is_Isomorphic_With(Tree other)
     {
 
-        Node r1 = this.root;
-        Node r2 = other.root;
-        Dictionary<Node, string> labels1 = this.Labels_By_Level();
-        Dictionary<Node, string> labels2 = other.Labels_By_Level();
+        IsoNode r1 = this.root;
+        IsoNode r2 = other.root;
+        Dictionary<IsoNode, string> labels1 = this.Labels_By_Level();
+        Dictionary<IsoNode, string> labels2 = other.Labels_By_Level();
 
         // Console.WriteLine(labels1[r1]);
         // Console.WriteLine(labels2[r2]);

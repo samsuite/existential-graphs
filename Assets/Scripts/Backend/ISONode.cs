@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class Node
+public class IsoNode
 {
 
     /*
@@ -10,17 +10,17 @@ public class Node
 
     */
 
-    public List<Node> children { get; }
-    public Node parent { get; set;}
-    public bool is_var { get; }
-    public bool is_cut { get; }
-    public bool is_root { get; }
+    public List<IsoNode> children;// { get; }
+    public IsoNode parent;// { get; set;}
+    public bool is_var;// { get; }
+    public bool is_cut;// { get; }
+    public bool is_root;// { get; }
 
     public string value { get; set; }
 
-    public Node()
+    public IsoNode()
     {
-        this.children = new List<Node>();
+        this.children = new List<IsoNode>();
         // this.is_var = false;
         // this.is_cut = false;
         // this.is_root = true;
@@ -59,7 +59,7 @@ public class Node
         return this.children.Count == 0;
     }
 
-    public void Add_Child(Node n)
+    public void Add_Child(IsoNode n)
     {
 
         n.parent = this;
@@ -67,7 +67,7 @@ public class Node
 
     }
 
-    private int Depth_Helper(Node n, int depth)
+    private int Depth_Helper(IsoNode n, int depth)
     {
         if(n.is_root)
         {

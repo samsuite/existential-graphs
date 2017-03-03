@@ -12,16 +12,16 @@ namespace SimpleTest
         static void Main(string[] args)
         {
 
-            Node a = new Node();
-            Node A = new Node();
-            Node b = new Node();
-            Node B = new Node();
-            Node c = new Node();
-            Node C = new Node();
-            Node d = new Node();
-            Node D = new Node();
-            Node e = new Node();
-            Node E = new Node();
+            IsoNode a = new IsoNode();
+            IsoNode A = new IsoNode();
+            IsoNode b = new IsoNode();
+            IsoNode B = new IsoNode();
+            IsoNode c = new IsoNode();
+            IsoNode C = new IsoNode();
+            IsoNode d = new IsoNode();
+            IsoNode D = new IsoNode();
+            IsoNode e = new IsoNode();
+            IsoNode E = new IsoNode();
 
             A.Add_Child(B);
             A.Add_Child(C);
