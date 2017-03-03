@@ -29,6 +29,12 @@ public class node_manager : MonoBehaviour {
 
     void Update () {
 
+
+        if (Input.GetKeyDown(KeyCode.A)) {
+            build_hierarchy();
+        }
+
+
         // get the 2d worldspace position of the mouse
         mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
@@ -231,5 +237,101 @@ public class node_manager : MonoBehaviour {
 
         // we got overlap
         return true;
+    }
+
+    // does circle a enclose circle b?
+    public static bool contains (circle_drawer cir_a, circle_drawer cir_b){
+
+        float dist = Vector2.Distance(new Vector2(cir_a.transform.position.x, cir_a.transform.position.y), new Vector2(cir_b.transform.position.x, cir_b.transform.position.y));
+        float threshold = 0.05f;
+
+        if (dist <= (cir_a.radius - cir_b.radius) - threshold) 
+        {
+            // b is completely inside a
+            return true;
+        }
+
+        return false;
+    }
+
+
+    // does this circle encolse this variable?
+    public static bool contains (circle_drawer cir, variable_drawer var){
+
+        float dist = Vector2.Distance(new Vector2(cir.transform.position.x, cir.transform.position.y), new Vector2(var.transform.position.x, var.transform.position.y));
+        float threshold = 0.05f;
+        
+        if (dist <= (cir.radius - variable_selection_radius) - threshold)
+        {
+            // variable is completely inside circle
+            return true;
+        }
+        
+        return false;
+    }
+
+
+    static int compare_circle_size(circle_drawer x, circle_drawer y) {
+        if (x.radius > y.radius) {
+            return -1;
+        }
+        else if (x.radius < y.radius) {
+            return 1;
+        }
+        else { 
+            return 0;
+        }
+    }
+
+
+    public static void build_hierarchy () {
+
+        print ("building...");
+
+        // clear all parenting
+        for (int i = 0; i < all_cuts.Count; i++) {
+            all_cuts[i].transform.parent = null;
+        }
+        for (int i = 0; i < all_vars.Count; i++) {
+            all_vars[i].transform.parent = null;
+        }
+
+        // make sure there are no intersections
+        // in cuts...
+        for (int i = 0; i < all_cuts.Count; i++) {
+            if (all_cuts[i].intersecting) {
+                Debug.LogError("can't build hierarchy -- intersections exist");
+                return;
+            }
+        }
+        // and vars.
+        for (int i = 0; i < all_vars.Count; i++) {
+            if (all_vars[i].intersecting) {
+                Debug.LogError("can't build hierarchy -- intersections exist");
+                return;
+            }
+        }
+
+        all_cuts.Sort(compare_circle_size);
+
+        // parent cuts
+        for (int i = 0; i < all_cuts.Count; i++) {
+            for (int j = 0; j < i; j++) {
+                if (contains(all_cuts[j], all_cuts[i])) {
+                    all_cuts[i].transform.parent = all_cuts[j].transform;
+                }
+            }
+        }
+
+        // parent vars
+        for (int i = 0; i < all_vars.Count; i++) {
+            for (int j = 0; j < all_cuts.Count; j++) {
+                if (contains(all_cuts[j], all_vars[i])) {
+                    all_vars[i].transform.parent = all_cuts[j].transform;
+                }
+            }
+        }
+
+        // bada bing bada boom
     }
 }
