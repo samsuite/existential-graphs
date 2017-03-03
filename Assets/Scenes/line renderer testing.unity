@@ -251,6 +251,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1413051684}
   - component: {fileID: 1413051683}
+  - component: {fileID: 1413051682}
   m_Layer: 0
   m_Name: Node Manager
   m_TagString: Untagged
@@ -258,6 +259,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1413051682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413051681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d8ec1de18e4dab489253ff6d021d2a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parent: 0
 --- !u!114 &1413051683
 MonoBehaviour:
   m_ObjectHideFlags: 0

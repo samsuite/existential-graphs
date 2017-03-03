@@ -14,7 +14,7 @@ public class Tree
         Properties and Fields
     */
 
-    public IsoNode root { get; }
+    public IsoNode root;// { get; }
 
     /*
         Constructor(s)
