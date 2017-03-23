@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 1413051684}
   - component: {fileID: 1413051683}
   - component: {fileID: 1413051682}
+  - component: {fileID: 1413051685}
   m_Layer: 0
   m_Name: Node Manager
   m_TagString: Untagged
@@ -270,7 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d8ec1de18e4dab489253ff6d021d2a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: 0
+  parenting: 0
 --- !u!114 &1413051683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,9 +283,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 138ee15d07908044cbfd40262692ce64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  circle_prefab: {fileID: 1273000869345386, guid: b5cd15a8fd6f0f2498d64b704de6df52,
+  circle_prefab_in: {fileID: 1273000869345386, guid: b5cd15a8fd6f0f2498d64b704de6df52,
     type: 2}
-  variable_prefab: {fileID: 1244680834838576, guid: ea8c285f0652e1f419137fb4ff25d222,
+  variable_prefab_in: {fileID: 1244680834838576, guid: ea8c285f0652e1f419137fb4ff25d222,
     type: 2}
 --- !u!4 &1413051684
 Transform:
@@ -299,6 +300,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1413051685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413051681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f7f13e80a5ba3547995e4c2e70a0881, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2126971800
 GameObject:
   m_ObjectHideFlags: 0

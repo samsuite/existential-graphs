@@ -7,8 +7,10 @@ public class node_manager : MonoBehaviour {
     public static List<circle_drawer> all_cuts = new List<circle_drawer>();
     public static List<variable_drawer> all_vars = new List<variable_drawer>();
 
-    public GameObject circle_prefab;
-    public GameObject variable_prefab;
+    public GameObject circle_prefab_in;
+    public GameObject variable_prefab_in;
+    static GameObject circle_prefab;
+    static GameObject variable_prefab;
     public static circle_drawer currently_selected_circle;
     public static variable_drawer currently_selected_variable;
 
@@ -19,16 +21,20 @@ public class node_manager : MonoBehaviour {
     [HideInInspector]
     public static bool currently_moving_var = false;
 
-    Vector2 mouse_position;
-    Vector2 clicked_point;
-    Vector2 offset;
+    static Vector2 mouse_position;
+    static Vector2 clicked_point;
+    static Vector2 offset;
 
-    public static float min_circle_radius = 0.5f;
-    public static float selection_width = 0.05f;
-    public static float variable_selection_radius = 0.25f;
+    public const float min_circle_radius = 0.5f;
+    public const float selection_width = 0.05f;
+    public const float variable_selection_radius = 0.25f;
+
+    void Awake () {
+        circle_prefab = circle_prefab_in;
+        variable_prefab = variable_prefab_in;
+    }
 
     void Update () {
-
 
         if (Input.GetKeyDown(KeyCode.A)) {
             build_hierarchy();
@@ -113,7 +119,9 @@ public class node_manager : MonoBehaviour {
                     offset = new Vector2(currently_selected_variable.transform.position.x,currently_selected_variable.transform.position.y) - clicked_point;
                 }
                 else {
-                    AddCircle(mouse_position);
+                    currently_selected_circle = AddCircle(mouse_position);
+                    clicked_point = mouse_position;
+                    currently_scaling_cut = true;
                 }
             }
 
@@ -124,7 +132,10 @@ public class node_manager : MonoBehaviour {
                     currently_scaling_cut = true;
                 }
                 else if (!currently_selected_variable){ // if we're not selecting a variable already
-                    AddVariable(mouse_position, "Q");   // add a new one
+                    currently_selected_variable = AddVariable(mouse_position, "Q");   // add a new one
+                    currently_moving_var = true;
+                    clicked_point = mouse_position;
+                    offset = Vector2.zero;
                 }
             }
 
@@ -142,42 +153,51 @@ public class node_manager : MonoBehaviour {
     }
 
     // put a new circle in the scene
-    void AddCircle(Vector2 pos)
+    public static circle_drawer AddCircle(Vector2 pos, float radius = min_circle_radius)
     {    
-        currently_selected_circle = Instantiate(circle_prefab, new Vector3(pos.x,pos.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
-        clicked_point = pos;
-        currently_scaling_cut = true;
+        circle_drawer new_cut = Instantiate(circle_prefab, new Vector3(pos.x,pos.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
+        new_cut.radius = radius;
+        all_cuts.Add(new_cut);
 
-        all_cuts.Add(currently_selected_circle);
+        return new_cut;
     }
 
 
     // put a new variable in the scene
-    void AddVariable(Vector2 pos, string name)
+    public static variable_drawer AddVariable(Vector2 pos, string name)
     {    
-        currently_selected_variable = Instantiate(variable_prefab, new Vector3(pos.x,pos.y,0f), Quaternion.identity).GetComponent<variable_drawer>();
-        all_vars.Add(currently_selected_variable);
-        currently_selected_variable.set_text(name);
+        variable_drawer new_var = Instantiate(variable_prefab, new Vector3(pos.x,pos.y,0f), Quaternion.identity).GetComponent<variable_drawer>();
+        all_vars.Add(new_var);
+        new_var.set_text(name);
 
-        currently_moving_var = true;
-        clicked_point = mouse_position;
-        offset = Vector2.zero;
+        return new_var;
     }
 
     // delete a circle and remove it from the list
-    void RemoveCircle(circle_drawer cir)
+    public static void RemoveCircle(circle_drawer cir)
     {
         all_cuts.Remove(cir);
         Destroy(cir.gameObject);
     }
 
     // delete a variable and remove it from the list
-    void RemoveVariable(variable_drawer var)
+    public static void RemoveVariable(variable_drawer var)
     {
         all_vars.Remove(var);
         Destroy(var.gameObject);
     }
 
+    // clear all cuts and vars from the scene
+    public static void EraseAll()
+    {
+        // have to delete in reverse order so we don't mess with the indices as we clear out the lists
+        for (int i = all_vars.Count-1; i >= 0; i--) {
+            RemoveVariable(all_vars[i]);
+        }
+        for (int i = all_cuts.Count-1; i >= 0; i--) {
+            RemoveCircle(all_cuts[i]);
+        }
+    }
 
     // does this other circle intersect with this other circle?
     public static bool intersect (circle_drawer cir_a, circle_drawer cir_b){
