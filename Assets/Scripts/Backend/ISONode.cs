@@ -91,7 +91,7 @@ public class ISONode
         return Number_Of_Cuts % 2 == 0;
     }
 
-    public bool Is_On_Even_Level()
+    public bool Is_On_Odd_Level()
     {
         return !Is_On_Even_Level();
     }
