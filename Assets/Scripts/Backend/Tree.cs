@@ -99,12 +99,12 @@ public class Tree
             return found_ISONode;
         }
 
-        List<ISONode> mod_getChildren() = new List<ISONode>(root_of_modified_tree.getChildren());
-        List<ISONode> orig_getChildren() = new List<ISONode>(root_of_original_tree.getChildren());
+        List<ISONode> mod_children = new List<ISONode>(root_of_modified_tree.getChildren());
+        List<ISONode> orig_children = new List<ISONode>(root_of_original_tree.getChildren());
 
-        while(Isomorphic_Pair_Exists(mod_getChildren(), orig_getChildren()));
+        while(Isomorphic_Pair_Exists(mod_children, orig_children));
 
-        found_ISONode = Find_Difference(mod_getChildren()[0], orig_getChildren()[0]);
+        found_ISONode = Find_Difference(mod_children[0], orig_children[0]);
 
         return found_ISONode;
 
