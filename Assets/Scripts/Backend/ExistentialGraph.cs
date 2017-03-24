@@ -1,6 +1,20 @@
 using System;
 using System.Collections.Generic;
 
+
+
+
+/*
+
+
+    Rules for Inference Rules as noted in file InferenceRules.cs
+
+    Two Arguments:
+        Node n <- Head node
+        Parameters <- Parameters for Node (Location data, id, etc)  <- NOT IMPLEMENTED YET
+
+
+*/
 public class ExistentialGraph
 {
 
@@ -75,8 +89,6 @@ public class ExistentialGraph
         return n.Is_On_Even_Level();
     }
 
-
-
     /* Inference Rules */ // WORK IN PROGRESS
     public void Insert(ISONode location_to_add,ISONode subgraph)
     {
@@ -90,7 +102,15 @@ public class ExistentialGraph
 
     }
 
-    //erase will be here
+    public void Erase(ISONode location_to_perform_erasure, ISONode subgraph)
+    {
+        if(!Can_Erase(location_to_perform_erasure))
+        {
+            return;
+        }
+
+        this._graph.Remove_SubGraph(subgraph);
+    }
 
     public void Apply_Double_Cut(ISONode location_to_add)
     {
@@ -106,21 +126,32 @@ public class ExistentialGraph
 
     }
 
-    //Have to debug
     public void Remove_Double_Cut(ISONode location)
     {
         this._graph.Remove_Double_Cut(location);
     }
 
-    //Have to clarify if we only want to supply "mother" node
     public void Iterate(ISONode location, ISONode subgraph)
     {
-        location.Add_Child(subgraph);
+        if(!Can_Iterate(location))
+        {
+            return;
+        }
+
+        Insert(location, subgraph);
+    }
+
+    public void Deiterate(ISONode subgraph)
+    {
+        if(!Can_Deiterate(subgraph))
+        {
+            return;
+        }
+
+        Erase(subgraph.parent, subgraph);
     }
 
     /*  Functions to add */
-    // Erase
-    // Deiterate
     // IsInstanceOf <rule> methods
     // verify methods
 
