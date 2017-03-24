@@ -54,7 +54,7 @@ public class Tree
 
         foreach(ISONode child in root_of_subtree.getChildren())
         {
-             height = max(height, Height_Of_SubTree(child));
+             height = Math.Max(height, Height_Of_SubTree(child));
         }
 
         return 1 + height;

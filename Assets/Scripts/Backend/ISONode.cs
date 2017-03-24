@@ -74,7 +74,7 @@ public class ISONode
         {
             foreach(ISONode child in this.children)
             {
-                if(Child.is_cut)
+                if(child.is_cut)
                 {
                     return true;
                 }
