@@ -24,26 +24,21 @@ public class node_manager : MonoBehaviour {
     static Vector2 mouse_position;
     static Vector2 clicked_point;
     static Vector2 offset;
-    
-    public static float min_circle_radius = 0.5f;
-    public static float selection_width = 0.1f; // originall 0.5f;
-    public static float variable_selection_radius = 0.25f;
 
-
-    public static bool on_button = false;
+    public const float min_circle_radius = 0.5f;
+    public const float selection_width = 0.05f;
+    public const float variable_selection_radius = 0.25f;
 
     void Awake () {
         circle_prefab = circle_prefab_in;
         variable_prefab = variable_prefab_in;
     }
-    
+
     void Update () {
 
-        /*
         if (Input.GetKeyDown(KeyCode.A)) {
             build_hierarchy();
         }
-        */
 
 
         // get the 2d worldspace position of the mouse
@@ -124,12 +119,9 @@ public class node_manager : MonoBehaviour {
                     offset = new Vector2(currently_selected_variable.transform.position.x,currently_selected_variable.transform.position.y) - clicked_point;
                 }
                 else {
-                    if(!on_button)
-                    {
-                        currently_selected_circle = AddCircle(mouse_position);
-                        clicked_point = mouse_position;
-                        currently_scaling_cut = true;
-                    }
+                    currently_selected_circle = AddCircle(mouse_position);
+                    clicked_point = mouse_position;
+                    currently_scaling_cut = true;
                 }
             }
 
@@ -362,30 +354,4 @@ public class node_manager : MonoBehaviour {
 
         // bada bing bada boom
     }
-
-
-    // shannon's added functions
-    public void ClickAddVariable(string name)
-    {
-        Vector2 pos;
-        //mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);		
-        pos = new Vector2(0f, 0f);
-        currently_selected_variable = Instantiate(variable_prefab, new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<variable_drawer>();
-        all_vars.Add(currently_selected_variable);
-        currently_selected_variable.set_text(name);
-        currently_moving_var = false;
-        clicked_point = mouse_position;
-        offset = Vector2.zero;
-    }
-    public void OnButton()
-    {
-        on_button = true;
-    }
-    public void OffButton()
-    {
-        on_button = false;
-    }
-
-
-
 }

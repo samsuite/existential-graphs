@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class node_manager_shannon : MonoBehaviour {
+public class node_manager : MonoBehaviour {
 
     public static List<circle_drawer> all_cuts = new List<circle_drawer>();
     public static List<variable_drawer> all_vars = new List<variable_drawer>();
