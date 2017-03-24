@@ -29,6 +29,8 @@ public class node_manager : MonoBehaviour {
     public const float selection_width = 0.05f;
     public const float variable_selection_radius = 0.25f;
 
+	public static bool on_button = false;
+
     void Awake () {
         circle_prefab = circle_prefab_in;
         variable_prefab = variable_prefab_in;
@@ -119,9 +121,11 @@ public class node_manager : MonoBehaviour {
                     offset = new Vector2(currently_selected_variable.transform.position.x,currently_selected_variable.transform.position.y) - clicked_point;
                 }
                 else {
-                    currently_selected_circle = AddCircle(mouse_position);
-                    clicked_point = mouse_position;
-                    currently_scaling_cut = true;
+					if (!on_button) {
+						currently_selected_circle = AddCircle (mouse_position);
+						clicked_point = mouse_position;
+						currently_scaling_cut = true;
+					}
                 }
             }
 
@@ -172,6 +176,22 @@ public class node_manager : MonoBehaviour {
 
         return new_var;
     }
+
+
+	public void ClickAddVariable(string name)
+	{
+		mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+		variable_drawer currently_selected_variable = AddVariable(mouse_position, name);
+		currently_selected_variable.set_text(name);
+	}
+
+	public void OnButton(){
+		on_button = true;
+	}
+
+	public void OffButton(){
+		on_button = false;
+	}
 
     // delete a circle and remove it from the list
     public static void RemoveCircle(circle_drawer cir)
