@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 ///-----------------------------------------------------------------
 ///   Namespace:      N/A
@@ -10,208 +10,175 @@ using System;
 public class Tree
 {
 
-    /*
-        Properties and Fields
-    */
+    /* Properties and Fields */
 
-    public IsoNode root;// { get; }
+    public ISONode root;
 
-    /*
-        Constructor(s)
-    */
+    /* Constructors */
 
     public Tree()
     {
-        this.root = new IsoNode();
+        this.root = new ISONode();
     }
 
-    public Tree(IsoNode r)
+    public Tree(ISONode r)
     {
         this.root = r;
     }
 
-    /*
-        Methods
-    */
+    /*  Private Helper Methods */
 
-
-    /*
-
-        Function Name:  Height_Helper
-        Parameters:  root: Node, height: int
-        Description:  Helper Function to handle recursive calculation of height of tree
-
-    */
-
-    private int Height_Helper(IsoNode root, int height)
+    private int Assign_Label(ISONode root)
     {
-        if(root.Is_Leaf())
+        if(root.Is_Leaf()) { return 1; }
+
+        int label = 0;
+
+        foreach(ISONode child in root.getChildren())
         {
-            return height;
+            label +=  1 + Assign_Label(child);
         }
 
-        List<IsoNode> children = root.children;
-        int max_so_far = 0;
-
-        foreach(IsoNode child in children)
-        {
-            max_so_far = Math.Max(max_so_far, Height_Helper(child, height + 1));
-        }
-
-        return max_so_far;
+        return label;
     }
 
-    /*
-
-        Function Name:  Height
-        Parameters:  None
-        Description:  Calculates the height of the tree
-
-    */
-    public int Height()
-    {
-        return Height_Helper(this.root, 0);
-    }
-
-
-    /*
-
-        Function Name:  Nodes_By_Level_Helper
-        Parameters:  root: Node, level: int, levels: Dict<int, List<Node>
-        Description:  Helper Function to handle retrieving nodes by level in tree (DFS)
-
-    */
-    private void Nodes_By_Level_Helper(IsoNode root, int level, ref Dictionary<int, List<IsoNode> > levels)
+    private int Height_Of_SubTree(ISONode root_of_subtree)
     {
 
-        if(!levels.ContainsKey(level))
+        if(root_of_subtree.Is_Leaf())
         {
-            levels[level] = new List<IsoNode>();
+            return 1;
         }
 
-        levels[level].Add(root);
+        int height = 0;
 
-        List<IsoNode> children = root.children;
-
-        foreach(IsoNode child in children)
+        foreach(ISONode child in root_of_subtree.getChildren())
         {
-
-            Nodes_By_Level_Helper(child, level + 1, ref levels);
-
+             height = max(height, Height_Of_SubTree(child));
         }
 
+        return 1 + height;
     }
 
-
-    /*
-
-        Function Name:  Nodes_By_Level
-        Parameters:  None
-        Description:  Returns a Dictionary with mappings of level to nodes by level
-
-    */
-    public Dictionary<int, List<IsoNode> > Nodes_By_Level()
+    private int Num_Leaves(ISONode n)
     {
+        int leaves = 0;
 
-        Dictionary<int, List<IsoNode> > levels = new Dictionary<int, List<IsoNode> >();
-        Nodes_By_Level_Helper(this.root, 0, ref levels);
-        return levels;
-    }
-
-
-
-    /*
-
-        Function Name:  Labels_By_Level_Helper
-        Parameters:  root: Node, Dict<Node, string>
-        Description:    Recursively traverses the tree, updating labels on the way up
-
-    */
-    public void Labels_By_Level_Helper(IsoNode root, ref Dictionary<IsoNode, string> labels)
-    {
-
-        if(root.Is_Leaf())
+        foreach(ISONode child in n.getChildren())
         {
-            labels[root] = "10";
-
-        }
-        else
-        {
-            List<IsoNode> children = root.children;
-
-            foreach(IsoNode child in children)
+            if(child.Is_Leaf())
             {
-                Labels_By_Level_Helper(child, ref labels);
+                leaves += 1;
             }
-
-            List<string> sorted_children = new List<string>();
-
-
-            foreach(IsoNode child in children)
-            {
-
-                sorted_children.Add(labels[child]);
-
-            }
-
-            sorted_children.Sort();
-
-            string name = "";
-
-            foreach(string label in sorted_children)
-            {
-
-                name += "1" + label + "0";
-                // Console.WriteLine(label);
-
-            }
-            Console.WriteLine(name);
-
-            labels[root] = name;
         }
 
+        return leaves;
     }
 
-
-    /*
-
-        Function Name:  Labels_By_Level
-        Parameters:  None
-        Description:    Returns a Dictionary containing mappings from nodes to canonical names
-
-    */
-    public Dictionary<IsoNode, string> Labels_By_Level()
+    private bool A_Difference_Exists_Between(ISONode n1, ISONode n2)
     {
-        Dictionary<IsoNode, string> labels = new Dictionary<IsoNode, string>();
-        this.Labels_By_Level_Helper(this.root, ref labels);
-        return labels;
+        return n1.getChildren().Count != n2.getChildren().Count || Height_Of_SubTree(n1) != Height_Of_SubTree(n2);
+    }
+
+    private bool Isomorphic_Pair_Exists(List<ISONode> L1, List<ISONode> L2)
+    {
+        foreach(ISONode n in L2)
+        {
+            foreach(ISONode m in L1)
+            {
+                if (SubTrees_Are_Isomorphic(n,m))
+                {
+                    L1.Remove(m);
+                    L2.Remove(n);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private ISONode Find_Difference(ISONode root_of_modified_tree, ISONode root_of_original_tree)
+    {
+
+        ISONode found_ISONode = null;
+
+        if(SubTrees_Are_Isomorphic(root_of_modified_tree, root_of_original_tree))
+        {
+            return found_ISONode;
+        }
+
+        if(A_Difference_Exists_Between(root_of_modified_tree, root_of_original_tree))
+        {
+            return root_of_original_tree;
+        }
+
+        if(root_of_modified_tree.Is_Leaf() || root_of_original_tree.Is_Leaf())
+        {
+            return found_ISONode;
+        }
+
+        List<ISONode> mod_children = new List<ISONode>(root_of_modified_tree.getChildren());
+        List<ISONode> orig_children= new List<ISONode>(root_of_original_tree.getChildren());
+
+        while(Isomorphic_Pair_Exists(mod_children, orig_children));
+
+        found_ISONode = Find_Difference(mod_children[0], orig_children[0]);
+
+        return found_ISONode;
 
     }
 
-    /*
+    /* Public Methods */
 
-        Function Name:  Is_Isomorphic_With
-        Parameters:  other: Tree
-        Description:    Determines whether two trees are isomorphic
-
-    */
     public bool Is_Isomorphic_With(Tree other)
     {
+        return Assign_Label(this.root) == Assign_Label(other.root);
+    }
 
-        IsoNode r1 = this.root;
-        IsoNode r2 = other.root;
-        Dictionary<IsoNode, string> labels1 = this.Labels_By_Level();
-        Dictionary<IsoNode, string> labels2 = other.Labels_By_Level();
+    public bool SubTrees_Are_Isomorphic(ISONode n1, ISONode n2)
+    {
+        return Assign_Label(n1) == Assign_Label(n2);
+    }
 
-        // Console.WriteLine(labels1[r1]);
-        // Console.WriteLine(labels2[r2]);
-        if(labels1[r1] == labels2[r2])
+
+    public ISONode Find_Difference(Tree other)
+    {
+        return this.Find_Difference(this.root, other.root);
+    }
+
+    public void Remove_SubGraph(ISONode root_of_subtree)
+    {
+
+        if(root_of_subtree.Is_Leaf())
         {
-            return true;
+            return;
         }
-        else
+
+        foreach(ISONode child in root_of_subtree.getChildren())
         {
-            return false;
+            Remove_SubGraph(child);
         }
+
+        root_of_subtree.parent.Remove_Child(root_of_subtree);
+        root_of_subtree = null;
+    }
+
+
+    public void Remove_Double_Cut(ISONode n)
+    {
+
+
+        ISONode subgraph_to_move_up = n.getChildren()[0].getChildren()[0].getChildren()[0];
+        subgraph_to_move_up.parent = n;
+
+        ISONode temp1 = n.getChildren()[0];
+        ISONode temp2 = n.getChildren()[0].getChildren()[0];
+
+        temp2.Remove_Child(subgraph_to_move_up);
+        temp1.Remove_Child(temp2);
+        temp2 = null;
+        temp1 = null;
+
+        n.Add_Child(subgraph_to_move_up);
     }
 }

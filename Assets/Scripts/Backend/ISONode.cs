@@ -1,65 +1,89 @@
 using System;
 using System.Collections.Generic;
 
-public class IsoNode
+public class ISONode
 {
 
-    /*
+    /* Properties and Fields */
 
-        Member Variables
+    public List<ISONode> children;
+    public ISONode parent;
+    public bool is_var;
+    public bool is_cut;
+    public string value;
 
-    */
-
-    public List<IsoNode> children;// { get; }
-    public IsoNode parent;// { get; set;}
-    public bool is_var;// { get; }
-    public bool is_cut;// { get; }
-    public bool is_root;// { get; }
-
-    public string value { get; set; }
-
-    public IsoNode()
+    /* Constructor(s) */
+    public ISONode()
     {
-        this.children = new List<IsoNode>();
-        // this.is_var = false;
-        // this.is_cut = false;
-        // this.is_root = true;
+        this.children = new List<ISONode>();
+        this.parent = null;
     }
-    //
-    // public Node(bool variable = false)
-    // {
-    //     this.children = new List<Node>();
-    //     this.is_var = variable;
-    //     this.is_cut = !variable;
-    //     this.is_root = false;
-    // }
-    //
-    // public Node(List<Node> children, bool variable = false,  bool root = true)
-    // {
-    //     this.children = children;
-    //
-    //     foreach(Node child in children)
-    //     {
-    //         child.parent = this;
-    //     }
-    //
-    //     this.is_var = variable;
-    //     this.is_cut = !variable;
-    //     this.is_root = root;
-    // }
 
+    public void Init_As_Cut()
+    {
+        this.is_cut = true;
+        this.is_var = false;
+        this.value = "cut";
 
-    /*
+    }
 
-        Methods that are valid for every type of node
+    public void Init_As_Var(string name)
+    {
+        this.is_cut = false;
+        this.is_var = true;
+        this.value = name;
+    }
 
-    */
+    /* Private Helper Methods */
+
+    private int Depth_Helper(ISONode n, int depth)
+    {
+        if(n == null)
+        {
+            return depth;
+        }
+        return Depth_Helper(n.parent, depth + 1);
+
+    }
+
+    private int Number_Of_Cuts(ISONode n, int cut_count)
+    {
+        if (n == null)
+        {
+            return cut_count;
+        }
+
+        if(n.is_cut)
+        {
+            return Number_Of_Cuts(n.parent, cut_count + 1);
+        }
+
+        return Number_Of_Cuts(n.parent, cut_count);
+    }
+
+    /*  Public Methods  */
+
     public bool Is_Leaf()
     {
         return this.children.Count == 0;
     }
 
-    public void Add_Child(IsoNode n)
+    public bool Has_Nested_Areas()
+    {
+        if (this.is_cut)
+        {
+            foreach(ISONode child in this.children)
+            {
+                if(Child.is_cut)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void Add_Child(ISONode n)
     {
 
         n.parent = this;
@@ -67,18 +91,34 @@ public class IsoNode
 
     }
 
-    private int Depth_Helper(IsoNode n, int depth)
+    public void Remove_Child(ISONode n)
     {
-        if(n.is_root)
-        {
-            return depth;
-        }
-        return Depth_Helper(n.parent, depth + 1);
-
+        this.children.Remove(n);
     }
+    
     public int Depth()
     {
         return Depth_Helper(this,0);
+    }
+
+    public List<ISONode> getChildren()
+    {
+        return this.children;
+    }
+
+    public bool Is_On_Even_Level()
+    {
+        return Number_Of_Cuts(this, 0) % 2 == 0;
+    }
+
+    public bool Is_On_Odd_Level()
+    {
+        return !Is_On_Even_Level();
+    }
+
+    public override string ToString()
+    {
+        return this.value;
     }
 
 }
