@@ -42,6 +42,24 @@ public class Tree
         return label;
     }
 
+    private int Height_Of_SubTree(ISONode root_of_subtree)
+    {
+
+        if(root_of_subtree.Is_Leaf())
+        {
+            return 1;
+        }
+
+        int height = 0;
+
+        foreach(ISONode child in root_of_subtree.getChildren())
+        {
+            height += 1 + Height_Of_SubTree(child);
+        }
+
+        return height;
+    }
+
     private int Num_Leaves(ISONode n)
     {
         int leaves = 0;
@@ -59,7 +77,7 @@ public class Tree
 
     private bool A_Difference_Exists_Between(ISONode n1, ISONode n2)
     {
-        return n1.getChildren().Count != n2.getChildren().Count || Num_Leaves(n1) != Num_Leaves(n2);
+        return n1.getChildren().Count != n2.getChildren().Count || Height_Of_SubTree(n1) != Height_Of_SubTree(n2);
     }
 
     private bool Isomorphic_Pair_Exists(List<ISONode> L1, List<ISONode> L2)
@@ -149,14 +167,18 @@ public class Tree
     public void Remove_Double_Cut(ISONode n)
     {
 
-        /* This is ugly, will change it to be better looking later */
-        n.parent.getChildren().Add(n.getChildren()[0].getChildren()[0]);
+
+        ISONode subgraph_to_move_up = n.getChildren()[0].getChildren()[0].getChildren()[0];
+        subgraph_to_move_up.parent = n;
+
         ISONode temp1 = n.getChildren()[0];
         ISONode temp2 = n.getChildren()[0].getChildren()[0];
-        n.getChildren().Remove(temp2);
+
+        temp2.Remove(subgraph_to_move_up);
+        temp1.Remove(temp2);
         temp2 = null;
-        n.getChildren().Remove(temp1);
         temp1 = null;
 
+        n.Add_Child(subgraph_to_move_up);
     }
 }
