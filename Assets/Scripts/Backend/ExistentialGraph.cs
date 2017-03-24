@@ -123,6 +123,7 @@ public class ExistentialGraph
         cut2.Init_As_Cut();
         cut2.Add_Child(location_to_add);
         cut1.Add_Child(cut2);
+        parent.Add_Child(cut1);
 
     }
 
