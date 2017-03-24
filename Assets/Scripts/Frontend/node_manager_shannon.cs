@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class node_manager : MonoBehaviour {
+public class node_manager_shannon : MonoBehaviour {
 
     public static List<circle_drawer> all_cuts = new List<circle_drawer>();
     public static List<variable_drawer> all_vars = new List<variable_drawer>();
@@ -24,24 +24,15 @@ public class node_manager : MonoBehaviour {
     Vector2 offset;
 
     public static float min_circle_radius = 0.5f;
-    public static float selection_width = 0.1f; // originall 0.5f;
+    public static float selection_width = 0.05f;
     public static float variable_selection_radius = 0.25f;
 
-
-    public static bool on_button = false;
+	public static bool on_button = false;
 
     void Update () {
 
-        /*
-        if (Input.GetKeyDown(KeyCode.A)) {
-            build_hierarchy();
-        }
-        */
-
-
         // get the 2d worldspace position of the mouse
         mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-
 
         // ok, what are we doing right now?
         if (currently_scaling_cut)         // we're in the middle of scaling a cut
@@ -104,6 +95,8 @@ public class node_manager : MonoBehaviour {
 
 
             if (Input.GetMouseButtonDown(0)){
+				Vector2 rayPos = new Vector2 (Camera.main.ScreenToWorldPoint (Input.mousePosition).x, Camera.main.ScreenToWorldPoint (Input.mousePosition).y);
+				RaycastHit2D hit = Physics2D.Raycast(rayPos,Vector2.zero, 0f);
                 // we clicked. do we have anything selected? if so, move that. otherwise, make a new circle
 
                 if (currently_selected_circle) {
@@ -117,10 +110,9 @@ public class node_manager : MonoBehaviour {
                     offset = new Vector2(currently_selected_variable.transform.position.x,currently_selected_variable.transform.position.y) - clicked_point;
                 }
                 else {
-                    if(!on_button)
-                    {
-                        AddCircle(mouse_position);
-                    }
+					if (!on_button) {
+						AddCircle (mouse_position);
+					}
                 }
             }
 
@@ -170,6 +162,28 @@ public class node_manager : MonoBehaviour {
         clicked_point = mouse_position;
         offset = Vector2.zero;
     }
+
+	public void ClickAddVariable(string name)
+	{    
+		Vector2 pos;
+		//mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
+		pos = new Vector2(0f,0f);
+		currently_selected_variable = Instantiate(variable_prefab, new Vector3(0f,0f,0f), Quaternion.identity).GetComponent<variable_drawer>();
+		all_vars.Add(currently_selected_variable);
+		currently_selected_variable.set_text(name);
+
+		currently_moving_var = false;
+		clicked_point = mouse_position;
+		offset = Vector2.zero;
+	}
+
+	public void OnButton(){
+		on_button = true;
+	}
+
+	public void OffButton(){
+		on_button = false;
+	}
 
     // delete a circle and remove it from the list
     void RemoveCircle(circle_drawer cir)
@@ -245,126 +259,10 @@ public class node_manager : MonoBehaviour {
         // we got overlap
         return true;
     }
-
-    // does circle a enclose circle b?
-    public static bool contains (circle_drawer cir_a, circle_drawer cir_b){
-
-        float dist = Vector2.Distance(new Vector2(cir_a.transform.position.x, cir_a.transform.position.y), new Vector2(cir_b.transform.position.x, cir_b.transform.position.y));
-        float threshold = 0.05f;
-
-        if (dist <= (cir_a.radius - cir_b.radius) - threshold) 
-        {
-            // b is completely inside a
-            return true;
-        }
-
-        return false;
-    }
-
-
-    // does this circle encolse this variable?
-    public static bool contains (circle_drawer cir, variable_drawer var){
-
-        float dist = Vector2.Distance(new Vector2(cir.transform.position.x, cir.transform.position.y), new Vector2(var.transform.position.x, var.transform.position.y));
-        float threshold = 0.05f;
-        
-        if (dist <= (cir.radius - variable_selection_radius) - threshold)
-        {
-            // variable is completely inside circle
-            return true;
-        }
-        
-        return false;
-    }
-
-
-    static int compare_circle_size(circle_drawer x, circle_drawer y) {
-        if (x.radius > y.radius) {
-            return -1;
-        }
-        else if (x.radius < y.radius) {
-            return 1;
-        }
-        else { 
-            return 0;
-        }
-    }
-
-
-    public static void build_hierarchy () {
-
-        print ("building...");
-
-        // clear all parenting
-        for (int i = 0; i < all_cuts.Count; i++) {
-            all_cuts[i].transform.parent = null;
-        }
-        for (int i = 0; i < all_vars.Count; i++) {
-            all_vars[i].transform.parent = null;
-        }
-
-        // make sure there are no intersections
-        // in cuts...
-        for (int i = 0; i < all_cuts.Count; i++) {
-            if (all_cuts[i].intersecting) {
-                Debug.LogError("can't build hierarchy -- intersections exist");
-                return;
-            }
-        }
-        // and vars.
-        for (int i = 0; i < all_vars.Count; i++) {
-            if (all_vars[i].intersecting) {
-                Debug.LogError("can't build hierarchy -- intersections exist");
-                return;
-            }
-        }
-
-        all_cuts.Sort(compare_circle_size);
-
-        // parent cuts
-        for (int i = 0; i < all_cuts.Count; i++) {
-            for (int j = 0; j < i; j++) {
-                if (contains(all_cuts[j], all_cuts[i])) {
-                    all_cuts[i].transform.parent = all_cuts[j].transform;
-                }
-            }
-        }
-
-        // parent vars
-        for (int i = 0; i < all_vars.Count; i++) {
-            for (int j = 0; j < all_cuts.Count; j++) {
-                if (contains(all_cuts[j], all_vars[i])) {
-                    all_vars[i].transform.parent = all_cuts[j].transform;
-                }
-            }
-        }
-
-        // bada bing bada boom
-    }
-
-
-    // shannon's added functions
-    public void ClickAddVariable(string name)
-    {
-        Vector2 pos;
-        //mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);		
-        pos = new Vector2(0f, 0f);
-        currently_selected_variable = Instantiate(variable_prefab, new Vector3(0f, 0f, 0f), Quaternion.identity).GetComponent<variable_drawer>();
-        all_vars.Add(currently_selected_variable);
-        currently_selected_variable.set_text(name);
-        currently_moving_var = false;
-        clicked_point = mouse_position;
-        offset = Vector2.zero;
-    }
-    public void OnButton()
-    {
-        on_button = true;
-    }
-    public void OffButton()
-    {
-        on_button = false;
-    }
-
-
-
 }
+
+
+//okay, gotta make functions for the seperate prefab set up that we want, make a public
+//function for each, call when button is clicked, second drop down easy to make, just duplicate, 
+//rename buttons as needed - learn to not make it draw circles when interacting with drop downs
+//just do raycast hit??
