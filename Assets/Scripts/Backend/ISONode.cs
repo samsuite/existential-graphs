@@ -31,14 +31,14 @@ public class ISONode
     {
         this.is_cut = false;
         this.is_var = true;
-        this.value = name
+        this.value = name;
     }
 
     /* Private Helper Methods */
 
     private int Depth_Helper(ISONode n, int depth)
     {
-        if(n.is_root)
+        if(n == null)
         {
             return depth;
         }
@@ -88,7 +88,7 @@ public class ISONode
 
     public bool Is_On_Even_Level()
     {
-        return Number_Of_Cuts % 2 == 0;
+        return Number_Of_Cuts(this, 0) % 2 == 0;
     }
 
     public bool Is_On_Odd_Level()

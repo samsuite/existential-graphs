@@ -100,7 +100,7 @@ public class Tree
         }
 
         List<ISONode> mod_children = new List<ISONode>(root_of_modified_tree.getChildren());
-        List<ISONode> orig_children = new List<ISONode>(root_of_original_tree.getChildren());
+        List<ISONode> orig_children= new List<ISONode>(root_of_original_tree.getChildren());
 
         while(Isomorphic_Pair_Exists(mod_children, orig_children));
 
@@ -153,7 +153,7 @@ public class Tree
         n.parent.getChildren().Add(n.getChildren()[0].getChildren()[0]);
         ISONode temp1 = n.getChildren()[0];
         ISONode temp2 = n.getChildren()[0].getChildren()[0];
-        n.getChildren()[0].Remove(temp2);
+        n.getChildren().Remove(temp2);
         temp2 = null;
         n.getChildren().Remove(temp1);
         temp1 = null;
