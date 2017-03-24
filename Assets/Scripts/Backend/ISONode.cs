@@ -68,6 +68,21 @@ public class ISONode
         return this.children.Count == 0;
     }
 
+    public bool Has_Nested_Areas()
+    {
+        if (this.is_cut)
+        {
+            foreach(ISONode child in this.children)
+            {
+                if(Child.is_cut)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void Add_Child(ISONode n)
     {
 
