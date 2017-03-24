@@ -54,10 +54,10 @@ public class Tree
 
         foreach(ISONode child in root_of_subtree.getChildren())
         {
-            height += 1 + Height_Of_SubTree(child);
+             height = max(height, Height_Of_SubTree(child));
         }
 
-        return height;
+        return 1 + height;
     }
 
     private int Num_Leaves(ISONode n)
