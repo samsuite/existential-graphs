@@ -116,7 +116,7 @@ public class ExistentialGraph
     {
 
         ISONode parent = location_to_add.parent;
-        parent.getChildren().Remove(location_to_add);
+        parent.Remove_Child(location_to_add);
         ISONode cut1 = new ISONode();
         cut1.Init_As_Cut();
         ISONode cut2 = new ISONode();

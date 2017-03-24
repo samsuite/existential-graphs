@@ -91,6 +91,11 @@ public class ISONode
 
     }
 
+    public void Remove_Child(ISONode n)
+    {
+        this.children.Remove(n);
+    }
+    
     public int Depth()
     {
         return Depth_Helper(this,0);

@@ -159,7 +159,7 @@ public class Tree
             Remove_SubGraph(child);
         }
 
-        root_of_subtree.parent.getChildren().Remove(root_of_subtree);
+        root_of_subtree.parent.Remove_Child(root_of_subtree);
         root_of_subtree = null;
     }
 
@@ -174,8 +174,8 @@ public class Tree
         ISONode temp1 = n.getChildren()[0];
         ISONode temp2 = n.getChildren()[0].getChildren()[0];
 
-        temp2.Remove(subgraph_to_move_up);
-        temp1.Remove(temp2);
+        temp2.Remove_Child(subgraph_to_move_up);
+        temp1.Remove_Child(temp2);
         temp2 = null;
         temp1 = null;
 
