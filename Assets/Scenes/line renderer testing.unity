@@ -2407,8 +2407,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7f13e80a5ba3547995e4c2e70a0881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  save_scene: 0
-  load_scene: 0
 --- !u!1 &1461010717
 GameObject:
   m_ObjectHideFlags: 0
@@ -2558,7 +2556,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1546546628}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1413051685}
+        m_MethodName: loadSceneFromState
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1546546628
@@ -2669,7 +2678,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1578822765}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1413051685}
+        m_MethodName: saveSceneToState
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1578822765

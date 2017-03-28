@@ -12,11 +12,6 @@ public class SaveManager : MonoBehaviour {
 
     SaveState state;
 
-    bool saved_scene = false;
-    bool loaded_scene = false;
-    public bool save_scene = false;
-    public bool load_scene = false;
-
     void Start () {
         string file_name = "test tree";
         state = new SaveState();
@@ -28,19 +23,6 @@ public class SaveManager : MonoBehaviour {
 
     /// just for testing ///
     ////////////////////////
-
-    void Update () {
-
-        if (!saved_scene && save_scene) {
-            saveSceneToState();
-        }
-        if (!loaded_scene && load_scene) {
-            loadSceneFromState();
-        }
-
-        saved_scene = save_scene;
-        loaded_scene = load_scene;
-    }
 
     public void saveSceneToState (){
         print ("saving");
