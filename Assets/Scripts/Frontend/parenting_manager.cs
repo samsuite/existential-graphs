@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(node_manager))]
 public class parenting_manager : MonoBehaviour
 {
+    public ISONode curr_state;
+    public ISONode prev_state;
+
 
     public bool parenting = false;
     private bool previous_value;
@@ -32,10 +35,12 @@ public class parenting_manager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.T))
         {
-            ISONode the_whole_damn_tree = ConvertToTree();
-            print("made 'the whole damn tree' ");
-            //print(the_whole_damn_tree.ToString());
-            string print_msg = the_whole_damn_tree.ToString();
+            prev_state = curr_state;
+            curr_state = ConvertToTree();
+            print("Converted scene to ISONode");
+
+            string print_msg = curr_state.ToString();
+            print(print_msg);
 
             char[] delimiter = { '\n' };
             string[] lines = print_msg.Split(delimiter);
@@ -44,9 +49,7 @@ public class parenting_manager : MonoBehaviour
             {
                 print(lines[i]);
             }
-
-
-
+            
         }
 
     }
