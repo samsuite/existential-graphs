@@ -38,11 +38,6 @@ public class node_manager : MonoBehaviour {
 
     void Update () {
 
-        if (Input.GetKeyDown(KeyCode.A)) {
-            build_hierarchy();
-        }
-
-
         // get the 2d worldspace position of the mouse
         mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 
@@ -308,70 +303,5 @@ public class node_manager : MonoBehaviour {
         }
         
         return false;
-    }
-
-
-    static int compare_circle_size(circle_drawer x, circle_drawer y) {
-        if (x.radius > y.radius) {
-            return -1;
-        }
-        else if (x.radius < y.radius) {
-            return 1;
-        }
-        else { 
-            return 0;
-        }
-    }
-
-
-    public static void build_hierarchy () {
-
-        print ("building...");
-
-        // clear all parenting
-        for (int i = 0; i < all_cuts.Count; i++) {
-            all_cuts[i].transform.parent = null;
-        }
-        for (int i = 0; i < all_vars.Count; i++) {
-            all_vars[i].transform.parent = null;
-        }
-
-        // make sure there are no intersections
-        // in cuts...
-        for (int i = 0; i < all_cuts.Count; i++) {
-            if (all_cuts[i].intersecting) {
-                Debug.LogError("can't build hierarchy -- intersections exist");
-                return;
-            }
-        }
-        // and vars.
-        for (int i = 0; i < all_vars.Count; i++) {
-            if (all_vars[i].intersecting) {
-                Debug.LogError("can't build hierarchy -- intersections exist");
-                return;
-            }
-        }
-
-        all_cuts.Sort(compare_circle_size);
-
-        // parent cuts
-        for (int i = 0; i < all_cuts.Count; i++) {
-            for (int j = 0; j < i; j++) {
-                if (contains(all_cuts[j], all_cuts[i])) {
-                    all_cuts[i].transform.parent = all_cuts[j].transform;
-                }
-            }
-        }
-
-        // parent vars
-        for (int i = 0; i < all_vars.Count; i++) {
-            for (int j = 0; j < all_cuts.Count; j++) {
-                if (contains(all_cuts[j], all_vars[i])) {
-                    all_vars[i].transform.parent = all_cuts[j].transform;
-                }
-            }
-        }
-
-        // bada bing bada boom
     }
 }
