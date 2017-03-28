@@ -29,18 +29,160 @@ public class parenting_manager : MonoBehaviour
 
             previous_value = parenting;
         }
+
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            ISONode the_whole_damn_tree = ConvertToTree();
+            print("made 'the whole damn tree' ");
+            //print(the_whole_damn_tree.ToString());
+            string print_msg = the_whole_damn_tree.ToString();
+
+            char[] delimiter = { '\n' };
+            string[] lines = print_msg.Split(delimiter);
+
+            for (int i= 0; i < lines.Length-1; i++)
+            {
+                print(lines[i]);
+            }
+
+
+
+        }
+
     }
 
-    public static void ParentAll()
+
+    public static ISONode ConvertToTree()
     {
+
+        // convert everything to a tree
+
+        // start by trying to parent everything, and stop if you cannot parent everything
+        if ( !ParentAll() )
+        {
+            return null;
+        }
+
+        ParentAll();
+
+        // initialize an IsoNode that is the canvas level
+
+        // loop through all the cuts/variables and find all that are on the canvas level
+        // method strategy : propogate down through
+        // assumption: transform.root returns the highest parent transform, and if transform.root = self.transform, it is on the canvas layer
+
+        List<circle_drawer> parent_cuts = new List<circle_drawer>();
+        List<variable_drawer> parent_vars = new List<variable_drawer>();
+
+        // all parent / canvas level cuts
+        foreach (circle_drawer c in node_manager.all_cuts)
+        {
+            if (c.transform.root == c.transform)
+            {
+                parent_cuts.Add(c);
+            }
+        }
+
+        // all parent / canvas level vars
+        foreach (variable_drawer v in node_manager.all_vars)
+        {
+            if (v.transform.root == v.transform)
+            {
+                parent_vars.Add(v);
+            }
+        }
+
+        //print("number of parent cuts: " + parent_cuts.Count);
+        //print("number of parent variables: " + parent_vars.Count);
+
+        // create canvas level IsoNode that we will add parent cuts and parent vars onto
+        ISONode root = new ISONode();
+        root.Init_As_Cut();
+
+
+        foreach( variable_drawer v in parent_vars)
+        {
+            ISONode iso_v = new ISONode();
+            iso_v.Init_As_Var(v.var_name.text);
+            root.Add_Child(iso_v);
+        }
+
+        foreach (circle_drawer c in parent_cuts)
+        {
+            root.Add_Child(make_cut(c));
+        }
+        
+        return root;
+
+    }
+
+
+    private static ISONode make_cut(circle_drawer cir)
+    {
+        ISONode iso_c = new ISONode();
+        iso_c.Init_As_Cut();
+
+        for( int i=0; i < cir.transform.childCount; i++ )
+        {
+            GameObject child = cir.transform.GetChild(i).gameObject;
+
+            circle_drawer child_cut = child.GetComponent<circle_drawer>();
+            variable_drawer child_var = child.GetComponent<variable_drawer>();
+
+            if(child_cut != null)
+            {
+                iso_c.Add_Child(make_cut(child_cut));
+            }
+
+            else if(child_var != null)
+            {
+                ISONode iso_v = new ISONode();
+                iso_v.Init_As_Var(child_var.var_name.text);
+                iso_c.Add_Child(iso_v);
+            }
+
+            else
+            {
+                //print("this gameobject [" + child.name + "] does not have a circle_drawer component OR a variable_drawer component");
+            }
+        }
+        
+        return iso_c;
+    }
+
+
+    public static bool ParentAll()
+    {
+        // Check to see if there are intersecting circles before proceeding
+        foreach (circle_drawer c in node_manager.all_cuts)
+        {
+            if (c.intersecting)
+            {
+                print("Can't enter parent mode -- you have cuts that are intersecting");
+                return false;
+            }
+        }
+
+        // Check to see if there are intersecting variables before proceeding
+        foreach (variable_drawer v in node_manager.all_vars)
+        {
+            if (v.intersecting)
+            {
+                print("Can't enter parent mode -- you have cuts that are intersecting");
+                return false;
+            }
+        }
+
+        // Start by unparenting all circles
         UnParentAll();
+
         // parent all circles
         foreach (circle_drawer a in node_manager.all_cuts)
         {
             circle_drawer smallest_parent = null;
             foreach (circle_drawer b in node_manager.all_cuts)
             {
-                if ( b.radius > a.radius && a != b && !node_manager.intersect(a,b) && concentric(a, b) )   // these are the only candidates that circle A could be parented to
+                if ( b.radius > a.radius && a != b && node_manager.contains(b, a) )   // these are the only candidates that circle A could be parented to
                 {   // !intersect covers the edge case that the circles are within our "degree of overlap", because concentric only just a math analysis of centers and radii
                     if( smallest_parent == null )
                     {
@@ -58,7 +200,7 @@ public class parenting_manager : MonoBehaviour
 
             if ( smallest_parent != null )
             {
-                a.transform.parent = smallest_parent.transform;
+                a.transform.SetParent(smallest_parent.transform);
             }
         }
 
@@ -68,7 +210,7 @@ public class parenting_manager : MonoBehaviour
             circle_drawer smallest_parent = null;
             foreach (circle_drawer b in node_manager.all_cuts)
             {
-                if (b.radius > node_manager.variable_selection_radius && !node_manager.intersect(b,v) && concentric(v, b))   // these are the only candidates that circle A could be parented to
+                if (b.radius > node_manager.variable_selection_radius && node_manager.contains(b, v))   // these are the only candidates that circle A could be parented to
                 {   // !intersect covers the edge case that the circles are within our "degree of overlap", because concentric only just a math analysis of centers and radii
                     if (smallest_parent == null)
                     {
@@ -90,35 +232,25 @@ public class parenting_manager : MonoBehaviour
             }
         }
 
+        return true;
+
     }
 
     public static void UnParentAll()
     {
         foreach (circle_drawer a in node_manager.all_cuts)
         {
-            a.transform.parent = null;
+            a.transform.SetParent(null);// = null;
         }
 
         foreach ( variable_drawer v in node_manager.all_vars )
         {
-            v.transform.parent = null;
+            v.transform.SetParent(null);// = null;
         }
     }
 
 
-    // returns true if circle_a is within circle_b
-    public static bool concentric(circle_drawer circle_a, circle_drawer circle_b)
-    {
-        float dist = Vector2.Distance(new Vector2(circle_a.transform.position.x, circle_a.transform.position.y), new Vector2(circle_b.transform.position.x, circle_b.transform.position.y));
-        return dist < (circle_b.radius - circle_a.radius);
-    }
-
-    // returns true if v is within c
-    public static bool concentric(variable_drawer v, circle_drawer c)
-    {
-        float dist = Vector2.Distance(new Vector2(v.transform.position.x, v.transform.position.y), new Vector2(c.transform.position.x, c.transform.position.y));
-        return dist < (c.radius - node_manager.variable_selection_radius);
-    }
+    
 
 
 

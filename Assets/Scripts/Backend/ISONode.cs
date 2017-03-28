@@ -115,10 +115,26 @@ public class ISONode
     {
         return !Is_On_Even_Level();
     }
-
     public override string ToString()
     {
+
+        /* original
         return this.value;
+        */
+
+        // new and improved ;)        
+        string msg = "";
+        for( int i = 0 ; i < this.Depth() - 1; i++ )
+            msg += "   ";
+        msg += this.value + '\n';
+        
+        // percolate step
+        foreach ( ISONode child in this.getChildren() )
+        {
+            msg += child.ToString();
+        }
+
+        return msg;
     }
 
 }
