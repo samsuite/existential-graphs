@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 44405360}
   - component: {fileID: 44405359}
   m_Layer: 5
-  m_Name: Button (6)
+  m_Name: p
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -396,7 +396,7 @@ GameObject:
   - component: {fileID: 105112505}
   - component: {fileID: 105112504}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: c
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -414,7 +414,7 @@ RectTransform:
   m_Children:
   - {fileID: 131586209}
   m_Father: {fileID: 1963356003}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -980,8 +980,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1357106192}
   - {fileID: 1963356003}
+  - {fileID: 1357106192}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1224,7 +1224,7 @@ GameObject:
   - component: {fileID: 962436356}
   - component: {fileID: 962436355}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: check
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1242,7 +1242,7 @@ RectTransform:
   m_Children:
   - {fileID: 296481053}
   m_Father: {fileID: 1357106192}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1336,7 +1336,7 @@ GameObject:
   - component: {fileID: 1013431877}
   - component: {fileID: 1013431876}
   m_Layer: 5
-  m_Name: Button (5)
+  m_Name: f
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1552,7 +1552,7 @@ GameObject:
   - component: {fileID: 1167645338}
   - component: {fileID: 1167645337}
   m_Layer: 5
-  m_Name: Button
+  m_Name: a
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1694,7 +1694,7 @@ GameObject:
   - component: {fileID: 1182378878}
   - component: {fileID: 1182378877}
   m_Layer: 5
-  m_Name: Button (7)
+  m_Name: q
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1836,7 +1836,7 @@ GameObject:
   - component: {fileID: 1192534675}
   - component: {fileID: 1192534674}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: b
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1854,7 +1854,7 @@ RectTransform:
   m_Children:
   - {fileID: 1770808119}
   m_Father: {fileID: 1963356003}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1977,7 +1977,7 @@ GameObject:
   - component: {fileID: 1193506456}
   - component: {fileID: 1193506455}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2089,7 +2089,7 @@ GameObject:
   - component: {fileID: 1314018845}
   - component: {fileID: 1314018844}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: e
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2107,7 +2107,7 @@ RectTransform:
   m_Children:
   - {fileID: 1461010718}
   m_Father: {fileID: 1963356003}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2230,7 +2230,7 @@ GameObject:
   - component: {fileID: 1357106193}
   - component: {fileID: 1357106195}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: top bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2246,17 +2246,17 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1578822763}
-  - {fileID: 1193506454}
-  - {fileID: 1546546626}
   - {fileID: 962436354}
+  - {fileID: 1193506454}
+  - {fileID: 1578822763}
+  - {fileID: 1546546626}
   m_Father: {fileID: 380712436}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 526.5, y: 193}
-  m_SizeDelta: {x: 1053, y: 37}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -18.5}
+  m_SizeDelta: {x: 0, y: 37}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1357106193
 MonoBehaviour:
@@ -2277,7 +2277,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2495,7 +2495,7 @@ GameObject:
   - component: {fileID: 1546546628}
   - component: {fileID: 1546546627}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: load
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2513,7 +2513,7 @@ RectTransform:
   m_Children:
   - {fileID: 1110350297}
   m_Father: {fileID: 1357106192}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2606,7 +2606,7 @@ GameObject:
   - component: {fileID: 1578822765}
   - component: {fileID: 1578822764}
   m_Layer: 5
-  m_Name: Button
+  m_Name: save
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2624,7 +2624,7 @@ RectTransform:
   m_Children:
   - {fileID: 1911932913}
   m_Father: {fileID: 1357106192}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2854,7 +2854,7 @@ GameObject:
   - component: {fileID: 1857980085}
   - component: {fileID: 1857980084}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: d
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2872,7 +2872,7 @@ RectTransform:
   m_Children:
   - {fileID: 215786908}
   m_Father: {fileID: 1963356003}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3069,7 +3069,7 @@ GameObject:
   - component: {fileID: 1963356005}
   - component: {fileID: 1963356004}
   m_Layer: 5
-  m_Name: Panel (1)
+  m_Name: sidebar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3086,20 +3086,20 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1167645336}
-  - {fileID: 1314018843}
-  - {fileID: 1857980083}
-  - {fileID: 105112503}
   - {fileID: 1192534673}
+  - {fileID: 105112503}
+  - {fileID: 1857980083}
+  - {fileID: 1314018843}
   - {fileID: 1013431875}
   - {fileID: 44405358}
   - {fileID: 1182378876}
   m_Father: {fileID: 380712436}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 25, y: 0.5}
-  m_SizeDelta: {x: 50, y: 422}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 25, y: 0}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1963356004
 MonoBehaviour:
@@ -3167,7 +3167,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
