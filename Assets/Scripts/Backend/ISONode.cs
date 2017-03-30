@@ -95,20 +95,20 @@ public class ISONode
     {
         this.children.Remove(n);
     }
-    
+
     public int Depth()
     {
         return Depth_Helper(this,0);
     }
 
-    public List<ISONode> getChildren()
+    public List<ISONode> Get_Children()
     {
         return this.children;
     }
 
     public bool Is_On_Even_Level()
     {
-        return Number_Of_Cuts(this, 0) % 2 == 0;
+        return Number_Of_Cuts(this, 0) % 2 == 1;
     }
 
     public bool Is_On_Odd_Level()
@@ -122,12 +122,14 @@ public class ISONode
         return this.value;
         */
 
-        // new and improved ;)        
+        // new and improved ;)
         string msg = "";
+
         for( int i = 0 ; i < this.Depth() - 1; i++ )
             msg += "   ";
+
         msg += this.value + '\n';
-        
+``
         // percolate step
         foreach ( ISONode child in this.getChildren() )
         {

@@ -34,7 +34,7 @@ public class Tree
 
         int label = 0;
 
-        foreach(ISONode child in root.getChildren())
+        foreach(ISONode child in root.Get_Children())
         {
             label +=  1 + Assign_Label(child);
         }
@@ -52,9 +52,9 @@ public class Tree
 
         int height = 0;
 
-        foreach(ISONode child in root_of_subtree.getChildren())
+        foreach(ISONode child in root_of_subtree.Get_Children())
         {
-             height = Math.Max(height, Height_Of_SubTree(child));
+             height = max(height, Height_Of_SubTree(child));
         }
 
         return 1 + height;
@@ -64,7 +64,7 @@ public class Tree
     {
         int leaves = 0;
 
-        foreach(ISONode child in n.getChildren())
+        foreach(ISONode child in n.Get_Children())
         {
             if(child.Is_Leaf())
             {
@@ -77,7 +77,7 @@ public class Tree
 
     private bool A_Difference_Exists_Between(ISONode n1, ISONode n2)
     {
-        return n1.getChildren().Count != n2.getChildren().Count || Height_Of_SubTree(n1) != Height_Of_SubTree(n2);
+        return n1.Get_Children().Count != n2.Get_Children().Count || Height_Of_SubTree(n1) != Height_Of_SubTree(n2);
     }
 
     private bool Isomorphic_Pair_Exists(List<ISONode> L1, List<ISONode> L2)
@@ -117,8 +117,8 @@ public class Tree
             return found_ISONode;
         }
 
-        List<ISONode> mod_children = new List<ISONode>(root_of_modified_tree.getChildren());
-        List<ISONode> orig_children= new List<ISONode>(root_of_original_tree.getChildren());
+        List<ISONode> mod_children = new List<ISONode>(root_of_modified_tree.Get_Children());
+        List<ISONode> orig_children= new List<ISONode>(root_of_original_tree.Get_Children());
 
         while(Isomorphic_Pair_Exists(mod_children, orig_children));
 
@@ -154,7 +154,7 @@ public class Tree
             return;
         }
 
-        foreach(ISONode child in root_of_subtree.getChildren())
+        foreach(ISONode child in root_of_subtree.Get_Children())
         {
             Remove_SubGraph(child);
         }
@@ -168,11 +168,11 @@ public class Tree
     {
 
 
-        ISONode subgraph_to_move_up = n.getChildren()[0].getChildren()[0].getChildren()[0];
+        ISONode subgraph_to_move_up = n.Get_Children()[0].Get_Children()[0].Get_Children()[0];
         subgraph_to_move_up.parent = n;
 
-        ISONode temp1 = n.getChildren()[0];
-        ISONode temp2 = n.getChildren()[0].getChildren()[0];
+        ISONode temp1 = n.Get_Children()[0];
+        ISONode temp2 = n.Get_Children()[0].Get_Children()[0];
 
         temp2.Remove_Child(subgraph_to_move_up);
         temp1.Remove_Child(temp2);

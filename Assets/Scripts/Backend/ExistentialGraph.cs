@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-
-
-
-
 /*
 
 
@@ -63,7 +59,7 @@ public class ExistentialGraph
             return false;
         }
 
-        foreach(ISONode child in n.parent.getChildren())
+        foreach(ISONode child in n.parent.Get_Children())
         {
 
             if(this._graph.SubTrees_Are_Isomorphic(child, n))
