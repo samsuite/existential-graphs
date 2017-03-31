@@ -129,7 +129,7 @@ public class ISONode
             msg += "   ";
 
         msg += this.value + '\n';
-``
+
         // percolate step
         foreach ( ISONode child in this.getChildren() )
         {
