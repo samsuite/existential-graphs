@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SaveManager : MonoBehaviour {
+public class SaveManager : MonoBehaviour
+{
 
-    public enum node_type {
+    public enum node_type
+    {
         Variable,
         Cut,
         Root
@@ -12,7 +14,8 @@ public class SaveManager : MonoBehaviour {
 
     SaveState state;
 
-    void Start () {
+    void Start()
+    {
         string file_name = "test tree";
         state = new SaveState();
     }
@@ -24,13 +27,15 @@ public class SaveManager : MonoBehaviour {
     /// just for testing ///
     ////////////////////////
 
-    public void saveSceneToState (){
-        print ("saving");
+    public void saveSceneToState()
+    {
+        print("saving");
         state.CreateStateFromScene();
     }
 
-    public void loadSceneFromState (){
-        print ("loading");
+    public void loadSceneFromState()
+    {
+        print("loading");
         state.LoadStateToScene();
     }
 

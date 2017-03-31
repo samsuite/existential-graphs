@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class ISONode
 {
 
+    public static ISONode nil = new ISONode();
+
     /* Properties and Fields */
 
     public List<ISONode> children;
