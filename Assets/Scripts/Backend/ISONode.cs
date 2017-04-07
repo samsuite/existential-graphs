@@ -133,7 +133,7 @@ public class ISONode
         msg += this.value + '\n';
 
         // percolate step
-        foreach ( ISONode child in this.getChildren() )
+        foreach ( ISONode child in this.Get_Children() )
         {
             msg += child.ToString();
         }
