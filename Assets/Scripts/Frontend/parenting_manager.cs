@@ -8,8 +8,9 @@ public class parenting_manager : MonoBehaviour
     public ExistentialGraph curr_state;
     public ExistentialGraph prev_state;
 
+    public GameObject parenting_button;
 
-    public bool parenting = false;
+    public static bool parenting = false;
     private bool previous_value;
 
     void Awake()
@@ -33,6 +34,7 @@ public class parenting_manager : MonoBehaviour
             previous_value = parenting;
         }
 
+
         if(Input.GetKeyDown(KeyCode.T))
         {
             prev_state = curr_state;
@@ -52,6 +54,26 @@ public class parenting_manager : MonoBehaviour
             
         }
 
+    }
+
+
+
+
+    public void SwitchParenting()
+    {
+        print("Switched parenting from " + parenting.ToString() + " to " + (!parenting).ToString());
+        parenting = !parenting;
+
+        active_hightlight ah = parenting_button.GetComponent<active_hightlight>();
+
+        if(parenting)
+        {
+            ah.EnableHighlight();
+        }
+        else
+        {
+            ah.DisableHightlight();
+        }
     }
 
 
