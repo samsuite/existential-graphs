@@ -29,6 +29,7 @@ public class node_manager : MonoBehaviour {
     [HideInInspector]
     public static bool currently_moving_var = false;
 
+
     static Vector2 mouse_position;
     static Vector2 clicked_point;
     static Vector2 offset;
@@ -63,6 +64,13 @@ public class node_manager : MonoBehaviour {
                 if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1)){
                     currently_scaling_cut = false;
                     currently_selected_circle = null;
+                    
+                    // reparent everything when in parenting mode
+                    if (parenting_manager.parenting)
+                    {
+                        parenting_manager.ParentAll();
+                    }
+
                 }
 
             }
@@ -73,6 +81,12 @@ public class node_manager : MonoBehaviour {
                 // if the player releases the left mouse button
                 if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1)){
                     currently_moving_cut = false;
+                    
+                    // reparent everything when in parenting mode
+                    if (parenting_manager.parenting)
+                    {
+                        parenting_manager.ParentAll();
+                    }
                 }
 
             }
@@ -83,6 +97,13 @@ public class node_manager : MonoBehaviour {
                 // if the player releases the left mouse button
                 if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1)){
                     currently_moving_var = false;
+                    
+                    // reparent everything when in parenting mode
+                    if (parenting_manager.parenting)
+                    {
+                        parenting_manager.ParentAll();
+                    }
+
                 }
             }
             else                               // we're not editing anything right now, so we can start
@@ -164,12 +185,19 @@ public class node_manager : MonoBehaviour {
 
     }
 
+
     // put a new circle in the scene
     public static circle_drawer AddCircle(Vector2 pos, float radius = min_circle_radius)
     {    
         circle_drawer new_cut = Instantiate(circle_prefab, new Vector3(pos.x,pos.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
         new_cut.radius = radius;
         all_cuts.Add(new_cut);
+
+        print("AddCircle() called");
+        if (parenting_manager.parenting)
+        {
+            parenting_manager.ParentAll();
+        }
 
         return new_cut;
     }
@@ -182,6 +210,13 @@ public class node_manager : MonoBehaviour {
         all_vars.Add(new_var);
         new_var.set_text(name);
 
+        print("AddVariable() called");
+        if (parenting_manager.parenting)
+        {
+            parenting_manager.ParentAll();
+        }
+
+
         return new_var;
     }
 
@@ -191,7 +226,14 @@ public class node_manager : MonoBehaviour {
 		mouse_position = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
 		variable_drawer currently_selected_variable = AddVariable(mouse_position, name);
 		currently_selected_variable.set_text(name);
-	}
+
+        print("ClickAddVariable() called");
+        if (parenting_manager.parenting)
+        {
+            parenting_manager.ParentAll();
+        }
+
+    }
 
     public void ClickAddCut()
 	{

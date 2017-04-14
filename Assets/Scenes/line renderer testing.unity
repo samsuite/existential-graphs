@@ -2534,6 +2534,7 @@ GameObject:
   - component: {fileID: 1193506456}
   - component: {fileID: 1193506455}
   - component: {fileID: 1193506458}
+  - component: {fileID: 1193506459}
   m_Layer: 5
   m_Name: parent
   m_TagString: Untagged
@@ -2582,7 +2583,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0.9333334, g: 0.9333334, b: 0.9333334, a: 1}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.33823532, g: 0.33823532, b: 0.33823532, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0
   m_SpriteState:
@@ -2598,7 +2599,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1193506456}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1413051682}
+        m_MethodName: SwitchParenting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1193506456
@@ -2652,6 +2664,17 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+--- !u!114 &1193506459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1193506453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b3316fdd46c024a9118538239bd0d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1225389764
 GameObject:
   m_ObjectHideFlags: 0
@@ -3248,7 +3271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d8ec1de18e4dab489253ff6d021d2a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parenting: 0
+  parenting_button: {fileID: 1193506453}
 --- !u!114 &1413051683
 MonoBehaviour:
   m_ObjectHideFlags: 0
