@@ -77,14 +77,32 @@ public class circle_drawer : MonoBehaviour {
             if (current_touches.Count >= 2) {
                 // if we have at least 2 touches, we'll scale. we're only going to pay attention to the first 2 touches.
 
+                Vector3 touchpos0 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
+                Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[1].index).position);
+
+                Vector3 touchvec0 = current_touches[0].start_pos - current_touches[0].center_start_pos;
+                Vector3 touchvec1 = current_touches[1].start_pos - current_touches[1].center_start_pos;
+
+
+
+                Vector2 fromVector2 = new Vector2(0, 1);
+                Vector2 toVector2 = new Vector2(-1, 0);
+ 
+                /*
+                float angle = Vector2.Angle(fromVector2, toVector2);
+                Vector3 cross = Vector3.Cross(fromVector2, toVector2);
+ 
+                if (cross.z > 0)
+                    ang = 360 - ang;
+                 * */
+
 
             }
             else if (current_touches.Count == 1) {
                 // if we just have 1 touch, we'll drag.
 
                 Vector3 touchpos = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
-
-                transform.position = (current_touches[0].center_start_pos - current_touches[0].start_pos) + ;
+                transform.position = (current_touches[0].center_start_pos - current_touches[0].start_pos) + touchpos;
 
             }
 
