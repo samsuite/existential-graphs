@@ -109,7 +109,7 @@ public class parenting_manager : MonoBehaviour
 
         foreach (circle_drawer c in parent_cuts)
         {
-            root.Add_Child(make_cut(c));
+            root.Add_Subgraph(make_cut(c));
         }
         
         return root;
