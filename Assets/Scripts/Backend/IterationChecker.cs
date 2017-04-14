@@ -13,7 +13,7 @@ public class IterationChecker : AlphaChecker
         this.prev_step = prev_step;
         this.current_step = current_step;
 
-        Tuple<ExistentialGraph, ExistentialGraph> dif_pair = this.Find_Difference_Between(prev_step, current_step);
+        Pair<ExistentialGraph, ExistentialGraph> dif_pair = this.Find_Difference_Between(prev_step, current_step);
         this.dif_point_prev = dif_pair.item1;
         this.dif_point_current = dif_pair.item2;
     }
