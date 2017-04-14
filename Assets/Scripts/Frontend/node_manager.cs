@@ -35,7 +35,7 @@ public class node_manager : MonoBehaviour {
     static Vector2 offset;
 
     public const float min_circle_radius = 0.5f;
-    public const float selection_width = 0.05f;
+    public const float selection_width = 0.15f;
     public const float variable_selection_radius = 0.25f;
 
 	public static bool on_button = false;

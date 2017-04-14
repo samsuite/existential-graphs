@@ -45,7 +45,7 @@ public class circle_drawer : MonoBehaviour {
 
         ///////////// just for testing
 
-        
+        /*
 
         if (Input.GetMouseButtonDown(0)) {
 
@@ -98,7 +98,7 @@ public class circle_drawer : MonoBehaviour {
 
         ////////////////////////////////
 
-
+        */
 
 
         if (node_manager.mode == node_manager.input_mode.touch) {
@@ -141,7 +141,7 @@ public class circle_drawer : MonoBehaviour {
 
             if (current_touches.Count >= 2) {
                 // if we have at least 2 touches, we'll scale. we're only going to pay attention to the first 2 touches.
-                /*
+                
                 Vector3 touchpos0 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
                 Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[1].index).position);
 
@@ -149,18 +149,22 @@ public class circle_drawer : MonoBehaviour {
                 Vector2 touchvec1 = current_touches[1].start_pos - current_touches[1].center_start_pos;
 
  
-                
                 float angle = Vector2.Angle(touchvec0, touchvec1);
                 float theta = 180f - (angle/2f + 90f);
-                float dist_to_center = Vector3.Distance(touchpos0, touchpos1)/2f * Mathf.Tan(theta);
+                float dist_to_center = (Vector3.Distance(touchpos0, touchpos1)/2f) * Mathf.Tan(theta);
 
                 Vector3 midpoint = (touchpos0 - touchpos1)/2f + touchpos1;
-                Vector3 toward_center = Vector3.Cross(touchpos0 - touchpos1, Vector3.forward).normalized;
+                Vector3 toward_center = Vector3.Cross(touchpos1 - touchpos0, Vector3.forward).normalized;
                 Vector3 center_point = midpoint + (toward_center * dist_to_center);
+
+
+                touchpos0.z = 0f;
+                touchpos1.z = 0f;
+                center_point.z = 0f;
 
                 transform.position = center_point;
                 radius = Vector3.Distance(touchpos0, center_point);
-                */
+
             }
             else if (current_touches.Count == 1) {
                 // if we just have 1 touch, we'll drag.
