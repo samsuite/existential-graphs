@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(node_manager))]
 public class parenting_manager : MonoBehaviour
 {
-    public ISONode curr_state;
-    public ISONode prev_state;
+    public ExistentialGraph curr_state;
+    public ExistentialGraph prev_state;
 
 
     public bool parenting = false;
@@ -55,7 +55,7 @@ public class parenting_manager : MonoBehaviour
     }
 
 
-    public static ISONode ConvertToTree()
+    public static ExistentialGraph ConvertToTree()
     {
 
         // convert everything to a tree
@@ -99,20 +99,17 @@ public class parenting_manager : MonoBehaviour
         //print("number of parent variables: " + parent_vars.Count);
 
         // create canvas level IsoNode that we will add parent cuts and parent vars onto
-        ISONode root = new ISONode();
-        root.Init_As_Cut();
-
+        ExistentialGraph root = new ExistentialGraph.Cut();
 
         foreach( variable_drawer v in parent_vars)
         {
-            ISONode iso_v = new ISONode();
-            iso_v.Init_As_Var(v.var_name.text);
-            root.Add_Child(iso_v);
+            ExistentialGraph iso_v = new ExistentialGraph.Var(v.var_name.text);
+            root.Add_Subgraph(iso_v);
         }
 
         foreach (circle_drawer c in parent_cuts)
         {
-            root.Add_Child(make_cut(c));
+            root.Add_Subgraph(make_cut(c));
         }
         
         return root;
@@ -120,10 +117,9 @@ public class parenting_manager : MonoBehaviour
     }
 
 
-    private static ISONode make_cut(circle_drawer cir)
+    private static ExistentialGraph make_cut(circle_drawer cir)
     {
-        ISONode iso_c = new ISONode();
-        iso_c.Init_As_Cut();
+        ExistentialGraph iso_c = new ExistentialGraph.Cut();
 
         for( int i=0; i < cir.transform.childCount; i++ )
         {
@@ -134,14 +130,13 @@ public class parenting_manager : MonoBehaviour
 
             if(child_cut != null)
             {
-                iso_c.Add_Child(make_cut(child_cut));
+                iso_c.Add_Subgraph(make_cut(child_cut));
             }
 
             else if(child_var != null)
             {
-                ISONode iso_v = new ISONode();
-                iso_v.Init_As_Var(child_var.var_name.text);
-                iso_c.Add_Child(iso_v);
+                ExistentialGraph iso_v = new ExistentialGraph.Var(child_var.var_name.text);
+                iso_c.Add_Subgraph(iso_v);
             }
 
             else

@@ -1,158 +1,232 @@
-using System;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
-/*
 
 
-    Rules for Inference Rules as noted in file InferenceRules.cs
-
-    Two Arguments:
-        Node n <- Head node
-        Parameters <- Parameters for Node (Location data, id, etc)  <- NOT IMPLEMENTED YET
-
-
-*/
-public class ExistentialGraph
+public abstract class ExistentialGraph
 {
+    private List<ExistentialGraph> subgraphs;
+    private Cut parent;
+    private string label;
 
-    /* Properties */
+    public abstract bool Is_Cut();
+    public abstract bool Is_Var();
+    public abstract bool Is_Leaf();
+    public abstract bool Has_Nested_Subgraphs();
+    public abstract List<ExistentialGraph> Get_Immediate_Subgraphs();
+    public abstract List<ExistentialGraph> Get_All_Subgraphs();
+    public abstract void Add_Subgraph(ExistentialGraph g);
 
-    private Tree _graph;
-
-
-    /* Constructor */
-
-    public ExistentialGraph(ISONode sheet_of_assertion)
+    public ExistentialGraph Get_Parent()
     {
-        this._graph = new Tree(sheet_of_assertion);
+        return this.parent;
     }
 
-    public ExistentialGraph(Tree t)
+    public string Label()
     {
-        this._graph = t;
+        this.Assign_Label();
+        return this.label;
     }
 
-    /* Private Helper Methods */
 
-    private bool Can_Place_DC(ISONode n)
+    public bool Exists_In_Upper_Subgraph()
     {
-        return true;
-    }
 
-    private bool Can_Remove_DC(ISONode n)
-    {
-        if (n.is_cut && n.children.Count == 1 && n.children[0].is_cut){
+        ExistentialGraph parent = this.Get_Parent();
+        List<ExistentialGraph> parent_children = parent.Get_Immediate_Subgraphs();
+
+        if (parent_children.Where(child => this.Equals(child)).Count() > 1)
             return true;
+
+        while (parent != null)
+        {
+            parent = parent.Get_Parent();
+            parent_children = parent.Get_Immediate_Subgraphs();
+
+            if (parent_children.Contains(this))
+                return true;
         }
+
+        return false;
+
+    }
+
+    public bool Exists_In_Level()
+    {
+        return this.Get_Parent().Get_Immediate_Subgraphs().Where(subgraph => this.Equals(subgraph)).Count() > 1;
+    }
+
+    private int Num_Cuts()
+    {
+        return (this.Get_Parent() == null) ? 0 : 1 + this.Get_Parent().Num_Cuts();
+    }
+
+    public bool Is_On_Even_Level()
+    {
+        return this.Num_Cuts() % 2 == 1;
+    }
+
+    public bool Is_On_Odd_Level()
+    {
+        return !this.Is_On_Even_Level();
+    }
+
+    public bool Is_Subgraph_Of(ExistentialGraph g)
+    {
+        if (this.Equals(g))
+            return true;
+
+        ExistentialGraph current = this;
+
+        while (current.Get_Parent() != null)
+        {
+            current = current.Get_Parent();
+            if (this.Equals(current))
+                return true;
+        }
+
         return false;
     }
 
-    private bool Can_Iterate(ISONode n)
+    public int Level()
     {
-        return true;
+        return (this.Get_Parent() == null) ? 1 : 1 + this.Get_Parent().Level();
     }
 
-    /*  This might have to change depending on input node */
-    private bool Can_Deiterate(ISONode n)
+
+    private void Assign_Label()
     {
-        if(n.parent == null)
+
+        if (this.Is_Leaf())
+            return;
+
+        this.subgraphs.ForEach(subgraph => subgraph.Assign_Label());
+
+        List<string> child_labels = this.subgraphs.Select(subgraph => subgraph.label).ToList();
+        child_labels.Sort();
+
+        this.label = "(" + child_labels.Aggregate("", (acc, subgraph) => acc + subgraph) + ")";
+    }
+
+
+    public override bool Equals(object other)
+    {
+        return ((other as ExistentialGraph) == null) ? false : this.Label() == (other as ExistentialGraph).Label();
+    }
+
+    public override int GetHashCode()
+    {
+        return this.Label().GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        string msg = "";
+
+        for (int i = 0; i < this.Level() - 1; i++)
+            msg += "   ";
+
+        msg += (this.Is_Cut())? "cut\n" : this.Label() + '\n';
+
+        if (this.Is_Var())
+            return msg;
+
+        foreach (ExistentialGraph child in this.Get_Immediate_Subgraphs())
+        {
+            msg += child.ToString();
+        }
+
+        return msg;
+    }
+
+    public sealed class Cut : ExistentialGraph
+    {
+
+        public Cut()
+        {
+            this.parent = null;
+            this.subgraphs = new List<ExistentialGraph>();
+            this.label = "()";
+        }
+
+        public override bool Is_Cut()
+        {
+            return true;
+        }
+        public override bool Is_Var()
+        {
+            return false;
+        }
+        public override bool Is_Leaf()
+        {
+            return this.subgraphs.Count == 0;
+        }
+
+        public override bool Has_Nested_Subgraphs()
+        {
+            return this.subgraphs.Where(subgraph => subgraph.Is_Cut()).Count() > 0;
+        }
+        public override List<ExistentialGraph> Get_Immediate_Subgraphs()
+        {
+            return this.subgraphs;
+        }
+
+        public override List<ExistentialGraph> Get_All_Subgraphs()
+        {
+            return this.subgraphs;
+        }
+
+        public override void Add_Subgraph(ExistentialGraph g)
+        {
+            g.parent = this;
+            this.subgraphs.Add(g);
+        }
+
+    }
+
+
+    public sealed class Var : ExistentialGraph
+    {
+
+        public Var(string label)
+        {
+            this.parent = new Cut();
+            this.label = label;
+        }
+
+        public override bool Is_Cut()
         {
             return false;
         }
 
-        foreach(ISONode child in n.parent.Get_Children())
+        public override bool Is_Var()
         {
-
-            if(this._graph.SubTrees_Are_Isomorphic(child, n))
-            {
-                return true;
-            }
-
+            return true;
         }
 
-        return Can_Deiterate(n.parent);
-    }
-
-
-    private bool Can_Insert(ISONode n)
-    {
-        return n.Is_On_Odd_Level();
-    }
-
-
-
-    private bool Can_Erase(ISONode n)
-    {
-        return n.Is_On_Even_Level();
-    }
-
-    /* Inference Rules */ // WORK IN PROGRESS
-    public void Insert(ISONode location_to_add,ISONode subgraph)
-    {
-
-        if(!Can_Insert(location_to_add))
+        public override bool Is_Leaf()
         {
-            return;
+            return true;
         }
 
-        location_to_add.Add_Child(subgraph);
-
-    }
-
-    public void Erase(ISONode location_to_perform_erasure, ISONode subgraph)
-    {
-        if(!Can_Erase(location_to_perform_erasure))
+        public override bool Has_Nested_Subgraphs()
         {
-            return;
+            return false;
         }
 
-        this._graph.Remove_SubGraph(subgraph);
-    }
-
-    public void Apply_Double_Cut(ISONode location_to_add)
-    {
-
-        ISONode parent = location_to_add.parent;
-        parent.Remove_Child(location_to_add);
-        ISONode cut1 = new ISONode();
-        cut1.Init_As_Cut();
-        ISONode cut2 = new ISONode();
-        cut2.Init_As_Cut();
-        cut2.Add_Child(location_to_add);
-        cut1.Add_Child(cut2);
-        parent.Add_Child(cut1);
-
-    }
-
-    public void Remove_Double_Cut(ISONode location)
-    {
-        this._graph.Remove_Double_Cut(location);
-    }
-
-    public void Iterate(ISONode location, ISONode subgraph)
-    {
-        if(!Can_Iterate(location))
+        public override List<ExistentialGraph> Get_Immediate_Subgraphs()
         {
-            return;
+            throw new Exception("Var doesn't have subgraphs other than itself.");
         }
 
-        Insert(location, subgraph);
-    }
-
-    public void Deiterate(ISONode subgraph)
-    {
-        if(!Can_Deiterate(subgraph))
+        public override List<ExistentialGraph> Get_All_Subgraphs()
         {
-            return;
+            return new List<ExistentialGraph>() { this };
+        }
+        public override void Add_Subgraph(ExistentialGraph g)
+        {
+            throw new Exception("Var can't have child subgraphs!");
         }
 
-        Erase(subgraph.parent, subgraph);
     }
-
-    /*  Functions to add */
-    // IsInstanceOf <rule> methods
-    // verify methods
-
-
-
-
 }
