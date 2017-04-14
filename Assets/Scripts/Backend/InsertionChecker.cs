@@ -13,8 +13,8 @@ public class InsertionChecker : AlphaChecker
         this.current_step = current_step;
 
         Tuple<ExistentialGraph, ExistentialGraph> dif_pair = this.Find_Difference_Between(prev_step, current_step);
-        this.dif_point_prev = dif_pair.Item1;
-        this.dif_point_current = dif_pair.Item2;
+        this.dif_point_prev = dif_pair.item1;
+        this.dif_point_current = dif_pair.item2;
     }
 
     public override bool Could_Be_Inferred()

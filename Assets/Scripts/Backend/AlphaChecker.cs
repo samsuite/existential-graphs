@@ -21,13 +21,13 @@ public abstract class AlphaChecker : IInferable
         return g1.Get_Immediate_Subgraphs().Count != g2.Get_Immediate_Subgraphs().Count;
     }
 
-    protected Tuple<ExistentialGraph, ExistentialGraph> Find_Difference_Between(ExistentialGraph previous_step, ExistentialGraph current_step)
+    protected Pair<ExistentialGraph, ExistentialGraph> Find_Difference_Between(ExistentialGraph previous_step, ExistentialGraph current_step)
     {
 
         if (A_DC_Exists(previous_step, current_step))
-            return Tuple.Create(previous_step.Get_Parent(), current_step.Get_Parent());
+            return Pair.Make(previous_step.Get_Parent(), current_step.Get_Parent());
         if (A_Difference_Exists(previous_step, current_step))
-            return Tuple.Create(previous_step, current_step);
+            return Pair.Make(previous_step, current_step);
 
         List<ExistentialGraph> labels_prev = previous_step.Get_Immediate_Subgraphs();
         List<ExistentialGraph> labels_current = current_step.Get_Immediate_Subgraphs();
