@@ -1,54 +1,69 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Verifier
+public class Verifier : MonoBehaviour
 {
+    public parenting_manager par;
 
-    private AlphaChecker dc;
-    private AlphaChecker iter;
-    private AlphaChecker deiter;
-    private AlphaChecker insert;
-    private AlphaChecker erasure;
-
-    public Verifier(ExistentialGraph prev_step, ExistentialGraph current_step)
-    {
-        this.dc = new DoubleCutChecker(prev_step, current_step);
-        this.iter = new IterationChecker(prev_step, current_step);
-        this.deiter = new DeiterationChecker(prev_step, current_step);
-        this.insert = new InsertionChecker(prev_step, current_step);
-        this.erasure = new ErasureChecker(prev_step, current_step);
+    void Start () {
+        par.ConvertAndPrint();
     }
 
-    public List<Rule> verify(ExistentialGraph g1, ExistentialGraph g2)
+    /*
+    public Verifier(ExistentialGraph prev_step, ExistentialGraph current_step)
     {
+        dc = new DoubleCutChecker(prev_step, current_step);
+        iter = new IterationChecker(prev_step, current_step);
+        deiter = new DeiterationChecker(prev_step, current_step);
+        insert = new InsertionChecker(prev_step, current_step);
+        erasure = new ErasureChecker(prev_step, current_step);
+    }
+
+     */
+
+ 
+    public void verify()
+    {
+        Debug.Log("VERIFYING!!!");
+
+        par.ConvertAndPrint();
+
+        AlphaChecker dc = new DoubleCutChecker(par.prev_state, par.curr_state);
+        AlphaChecker iter = new IterationChecker(par.prev_state, par.curr_state);
+        AlphaChecker deiter = new DeiterationChecker(par.prev_state, par.curr_state);
+        AlphaChecker insert = new InsertionChecker(par.prev_state, par.curr_state);
+        AlphaChecker erasure = new ErasureChecker(par.prev_state, par.curr_state);
+
+
         List<Rule> inferred_rules = new List<Rule>();
         bool found_rule = false;
-        if (this.dc.Could_Be_Inferred() && this.dc.Can_Be_Inferred())
+        if (dc.Could_Be_Inferred() && dc.Can_Be_Inferred())
         {
             inferred_rules.Add(Rule.doublecut);
             found_rule = true;
         }
 
-        if (this.iter.Could_Be_Inferred() && this.iter.Can_Be_Inferred())
+        if (iter.Could_Be_Inferred() && iter.Can_Be_Inferred())
         {
             inferred_rules.Add(Rule.iteration);
             found_rule = true;
         }
 
-        if (this.deiter.Could_Be_Inferred() && this.deiter.Can_Be_Inferred())
+        if (deiter.Could_Be_Inferred() && deiter.Can_Be_Inferred())
         {
             inferred_rules.Add(Rule.deiteration);
             found_rule = true;
         }
 
-        if (this.insert.Could_Be_Inferred() && this.insert.Can_Be_Inferred())
+        if (insert.Could_Be_Inferred() && insert.Can_Be_Inferred())
         {
             inferred_rules.Add(Rule.insertion);
             found_rule = true;
         }
 
-        if (this.erasure.Could_Be_Inferred() && this.erasure.Can_Be_Inferred())
+        if (erasure.Could_Be_Inferred() && erasure.Can_Be_Inferred())
         {
             inferred_rules.Add(Rule.erasure);
             found_rule = true;
@@ -57,12 +72,15 @@ public class Verifier
         if (!found_rule)
             inferred_rules.Add(Rule.invalid);
 
-        return inferred_rules;
+        //return inferred_rules;
+
+        print (inferred_rules);
     }
 
-    public bool Done(ExistentialGraph g1, ExistentialGraph g2)
+    public void Done()
     {
-        return g1.Equals(g2);
+        par.ConvertAndPrint();
+        print(par.prev_state.Equals(par.curr_state));
     }
 
 }

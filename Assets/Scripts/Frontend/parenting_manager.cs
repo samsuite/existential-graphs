@@ -35,28 +35,33 @@ public class parenting_manager : MonoBehaviour
         }
 
 
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            prev_state = curr_state;
-            curr_state = ConvertToTree();
-            print("Converted scene to ISONode");
-
-            string print_msg = curr_state.ToString();
-            print(print_msg);
-
-            char[] delimiter = { '\n' };
-            string[] lines = print_msg.Split(delimiter);
-
-            for (int i= 0; i < lines.Length-1; i++)
-            {
-                print(lines[i]);
-            }
-            
-        }
-
     }
 
 
+    public void ConvertAndPrint ()
+    {
+        prev_state = curr_state;
+        
+        print("current state: " + curr_state);
+        print("prev state: " + prev_state);
+
+        curr_state = ConvertToTree();
+        print("Converted scene to ISONode");
+        
+        print("current state: " + curr_state);
+
+        string print_msg = curr_state.ToString();
+        print(print_msg);
+
+        char[] delimiter = { '\n' };
+        string[] lines = print_msg.Split(delimiter);
+
+        for (int i= 0; i < lines.Length-1; i++)
+        {
+            print(lines[i]);
+        }
+
+    }
 
 
     public void SwitchParenting()

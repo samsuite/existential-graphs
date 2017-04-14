@@ -116,7 +116,7 @@ public class node_manager : MonoBehaviour {
                     circle_drawer cir = all_cuts[i];
                     Vector2 center = new Vector2(cir.transform.position.x, cir.transform.position.y);
 
-                    if( Mathf.Abs(Vector2.Distance(center, mouse_position) - cir.radius) < selection_width ) {
+                    if( Vector2.Distance(center, mouse_position) < cir.radius ) {
                         currently_selected_circle = cir;
                     }
                 }
@@ -149,9 +149,9 @@ public class node_manager : MonoBehaviour {
                     }
                     else {
 					    if (!on_button) {
-						    currently_selected_circle = AddCircle (mouse_position);
-						    clicked_point = mouse_position;
-						    currently_scaling_cut = true;
+						    //currently_selected_circle = AddCircle (mouse_position);
+						    //clicked_point = mouse_position;
+						    //currently_scaling_cut = true;
 					    }
                     }
                 }
