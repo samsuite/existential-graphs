@@ -80,22 +80,21 @@ public class circle_drawer : MonoBehaviour {
                 Vector3 touchpos0 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
                 Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[1].index).position);
 
-                Vector3 touchvec0 = current_touches[0].start_pos - current_touches[0].center_start_pos;
-                Vector3 touchvec1 = current_touches[1].start_pos - current_touches[1].center_start_pos;
+                Vector2 touchvec0 = current_touches[0].start_pos - current_touches[0].center_start_pos;
+                Vector2 touchvec1 = current_touches[1].start_pos - current_touches[1].center_start_pos;
 
-
-
-                Vector2 fromVector2 = new Vector2(0, 1);
-                Vector2 toVector2 = new Vector2(-1, 0);
  
-                /*
-                float angle = Vector2.Angle(fromVector2, toVector2);
-                Vector3 cross = Vector3.Cross(fromVector2, toVector2);
- 
-                if (cross.z > 0)
-                    ang = 360 - ang;
-                 * */
+                
+                float angle = Vector2.Angle(touchvec0, touchvec1);
+                float theta = 180f - (angle/2f + 90f);
+                float dist_to_center = Vector3.Distance(touchpos0, touchpos1)/2f * Mathf.Tan(theta);
 
+                Vector3 midpoint = (touchpos0 - touchpos1)/2f + touchpos1;
+                Vector3 toward_center = Vector3.Cross(touchpos0 - touchpos1, Vector3.forward).normalized;
+                Vector3 center_point = midpoint + (toward_center * dist_to_center);
+
+                transform.position = center_point;
+                radius = Vector3.Distance(touchpos0, center_point);
 
             }
             else if (current_touches.Count == 1) {
