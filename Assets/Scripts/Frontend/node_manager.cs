@@ -180,6 +180,20 @@ public class node_manager : MonoBehaviour {
 		currently_selected_variable.set_text(name);
 	}
 
+    public void ClickAddCut()
+	{
+		circle_drawer new_cut = Instantiate(circle_prefab, new Vector3(mouse_position.x,mouse_position.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
+        new_cut.radius = min_circle_radius;
+        all_cuts.Add(new_cut);
+
+        currently_selected_circle = new_cut;
+		clicked_point = mouse_position;
+
+        offset = new Vector2(currently_selected_circle.transform.position.x,currently_selected_circle.transform.position.y) - clicked_point;
+
+        currently_moving_cut = true;
+	}
+
 	public void OnButton(){
 		on_button = true;
 	}
