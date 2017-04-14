@@ -16,6 +16,8 @@ public class circle_drawer : MonoBehaviour {
     //public Vector2 center = Vector2.zero;
     public float line_width = 0.05f;
 
+    bool clicking = false;
+
     LineRenderer lines;
     public Transform quad;
 
@@ -29,12 +31,75 @@ public class circle_drawer : MonoBehaviour {
 
     List<touch_data> current_touches = new List<touch_data>();
 
+    Vector3 mouse_start_pos = new Vector3();
+    Vector3 center_start_pos = new Vector3();
+
 	void Start () {
         lines = GetComponent<LineRenderer>();
 		redraw_circle();
 	}
 
     void Update () {
+
+
+
+        ///////////// just for testing
+
+        
+
+        if (Input.GetMouseButtonDown(0)) {
+
+            mouse_start_pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            center_start_pos = transform.position;
+
+            if (Mathf.Abs(Vector2.Distance(transform.position, mouse_start_pos) - radius) < node_manager.selection_width) {
+                clicking = true;
+            }
+        }
+
+        if (!Input.GetMouseButton(0)) {
+            clicking = false;
+        }
+
+        if (clicking) {
+
+            Vector3 touchpos0 = transform.position + radius*Vector3.up;
+            Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            Vector2 touchvec0 = (radius*Vector3.up).normalized; //current_touches[0].start_pos - current_touches[0].center_start_pos;
+            Vector2 touchvec1 = (mouse_start_pos - center_start_pos).normalized;
+
+            print ("mouse_start_pos: "+ mouse_start_pos + "   center_start_pos: " + center_start_pos);
+
+            Debug.DrawLine(transform.position, touchpos1, Color.red);
+
+            Debug.DrawRay(transform.position, touchvec0*100f, Color.blue);
+            Debug.DrawRay(transform.position, touchvec1*100f, Color.yellow);
+                
+            float angle = Vector2.Angle(touchvec0, touchvec1);
+            float theta = 180f - (angle/2f + 90f);
+            float dist_to_center = (Vector3.Distance(touchpos0, touchpos1)/2f) * Mathf.Tan(theta);
+
+            Vector3 midpoint = (touchpos0 - touchpos1)/2f + touchpos1;
+            Vector3 toward_center = Vector3.Cross(touchpos1 - touchpos0, Vector3.forward).normalized;
+            Vector3 center_point = midpoint + (toward_center * dist_to_center);
+
+
+            touchpos0.z = 0f;
+            touchpos1.z = 0f;
+            center_point.z = 0f;
+
+            Debug.DrawRay(midpoint, toward_center*10f, Color.green);
+
+            transform.position = center_point;
+            radius = Vector3.Distance(touchpos0, center_point);
+        }
+
+
+        ////////////////////////////////
+
+
+
 
         if (node_manager.mode == node_manager.input_mode.touch) {
 
@@ -76,7 +141,7 @@ public class circle_drawer : MonoBehaviour {
 
             if (current_touches.Count >= 2) {
                 // if we have at least 2 touches, we'll scale. we're only going to pay attention to the first 2 touches.
-
+                /*
                 Vector3 touchpos0 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
                 Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[1].index).position);
 
@@ -95,7 +160,7 @@ public class circle_drawer : MonoBehaviour {
 
                 transform.position = center_point;
                 radius = Vector3.Distance(touchpos0, center_point);
-
+                */
             }
             else if (current_touches.Count == 1) {
                 // if we just have 1 touch, we'll drag.
