@@ -38,7 +38,7 @@ public abstract class ExistentialGraph
         if (parent_children.Where(child => this.Equals(child)).Count() > 1)
             return true;
 
-        while (parent != null)
+        while (parent.Get_Parent() != null)
         {
             parent = parent.Get_Parent();
             parent_children = parent.Get_Immediate_Subgraphs();
@@ -46,6 +46,10 @@ public abstract class ExistentialGraph
             if (parent_children.Contains(this))
                 return true;
         }
+        parent_children = parent.Get_Immediate_Subgraphs();
+
+        if (parent_children.Contains(this))
+            return true;
 
         return false;
 

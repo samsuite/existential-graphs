@@ -29,52 +29,50 @@ public class Verifier : MonoBehaviour
         Debug.Log("VERIFYING!!!");
 
         par.ConvertAndPrint();
+        AlphaChecker c = new AlphaChecker();
+        Pair<ExistentialGraph, ExistentialGraph> difp = c.Find_Difference_Between(par.prev_state, par.curr_state);
 
-        AlphaChecker dc = new DoubleCutChecker(par.prev_state, par.curr_state);
-        AlphaChecker iter = new IterationChecker(par.prev_state, par.curr_state);
-        AlphaChecker deiter = new DeiterationChecker(par.prev_state, par.curr_state);
-        AlphaChecker insert = new InsertionChecker(par.prev_state, par.curr_state);
-        AlphaChecker erasure = new ErasureChecker(par.prev_state, par.curr_state);
+        if (c.Is_Double_Cut(difp.item1, difp.item2))
+            print("It's a Double Cut!");
 
+        //List<Rule> inferred_rules = new List<Rule>();
+        //bool found_rule = false;
+        //if (dc.Could_Be_Inferred() && dc.Can_Be_Inferred())
+        //{
+        //    inferred_rules.Add(Rule.doublecut);
+        //    found_rule = true;
+        //}
 
-        List<Rule> inferred_rules = new List<Rule>();
-        bool found_rule = false;
-        if (dc.Could_Be_Inferred() && dc.Can_Be_Inferred())
-        {
-            inferred_rules.Add(Rule.doublecut);
-            found_rule = true;
-        }
+        //if (iter.Could_Be_Inferred() && iter.Can_Be_Inferred())
+        //{
+        //    inferred_rules.Add(Rule.iteration);
+        //    found_rule = true;
+        //}
 
-        if (iter.Could_Be_Inferred() && iter.Can_Be_Inferred())
-        {
-            inferred_rules.Add(Rule.iteration);
-            found_rule = true;
-        }
+        //if (deiter.Could_Be_Inferred() && deiter.Can_Be_Inferred())
+        //{
+        //    inferred_rules.Add(Rule.deiteration);
+        //    found_rule = true;
+        //}
 
-        if (deiter.Could_Be_Inferred() && deiter.Can_Be_Inferred())
-        {
-            inferred_rules.Add(Rule.deiteration);
-            found_rule = true;
-        }
+        //if (insert.Could_Be_Inferred() && insert.Can_Be_Inferred())
+        //{
+        //    inferred_rules.Add(Rule.insertion);
+        //    found_rule = true;
+        //}
 
-        if (insert.Could_Be_Inferred() && insert.Can_Be_Inferred())
-        {
-            inferred_rules.Add(Rule.insertion);
-            found_rule = true;
-        }
+        //if (erasure.Could_Be_Inferred() && erasure.Can_Be_Inferred())
+        //{
+        //    inferred_rules.Add(Rule.erasure);
+        //    found_rule = true;
+        //}
 
-        if (erasure.Could_Be_Inferred() && erasure.Can_Be_Inferred())
-        {
-            inferred_rules.Add(Rule.erasure);
-            found_rule = true;
-        }
-
-        if (!found_rule)
-            inferred_rules.Add(Rule.invalid);
+        //if (!found_rule)
+        //    inferred_rules.Add(Rule.invalid);
 
         //return inferred_rules;
 
-        print (inferred_rules);
+        //print (inferred_rules);
     }
 
     public void Done()
