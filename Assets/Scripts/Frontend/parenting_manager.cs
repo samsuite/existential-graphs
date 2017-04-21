@@ -138,7 +138,8 @@ public class parenting_manager : MonoBehaviour
         {
             root.Add_Subgraph(make_cut(c));
         }
-        
+
+        UnParentAll();
         return root;
 
     }
