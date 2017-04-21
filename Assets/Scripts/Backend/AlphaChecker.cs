@@ -27,7 +27,7 @@ public class AlphaChecker //: IInferable
             if (previous_step.Get_Parent() == null || current_step.Get_Parent() == null)
                 return Pair.Make(previous_step, current_step);
             return Pair.Make(previous_step.Get_Parent(), current_step.Get_Parent());
-        } 
+        }
         if (A_Difference_Exists(previous_step, current_step))
             return Pair.Make(previous_step, current_step);
 
@@ -41,17 +41,17 @@ public class AlphaChecker //: IInferable
         ExistentialGraph branch_to_consider_current = new ExistentialGraph.Cut();
 
         labels_prev.ForEach(subgraph =>
-            {
-                if (!h2.Contains(subgraph))
-                    branch_to_consider_prev = subgraph;
-            }
+        {
+            if (!h2.Contains(subgraph))
+                branch_to_consider_prev = subgraph;
+        }
         );
 
         labels_current.ForEach(subgraph =>
-            {
-                if (!h1.Contains(subgraph))
-                    branch_to_consider_current = subgraph;
-            }
+        {
+            if (!h1.Contains(subgraph))
+                branch_to_consider_current = subgraph;
+        }
         );
 
         return Find_Difference_Between(branch_to_consider_prev, branch_to_consider_current);
@@ -67,13 +67,13 @@ public class AlphaChecker //: IInferable
 
     public bool Is_Double_Cut(ExistentialGraph prev, ExistentialGraph current)
     {
-  
+
         HashSet<String> prev_children = new HashSet<String>(prev.Get_Immediate_Subgraphs().Select(graph => graph.Label()).ToList());
         HashSet<String> current_children = new HashSet<String>(current.Get_Immediate_Subgraphs().Select(graph => graph.Label()).ToList());
         if (prev_children.Count != current_children.Count)
             return false;
 
-        foreach(String g in prev_children)
+        foreach (String g in prev_children)
             if (current_children.Contains("((" + g + "))"))
                 return true;
 
@@ -135,7 +135,7 @@ public class AlphaChecker //: IInferable
                 return false;
             if (count_flag && !added_flag)
                 added_flag = true;
-            
+
         }
 
         return (added_flag) ? true : false;

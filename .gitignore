@@ -26,3 +26,5 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+/Assets/Scripts/Backend/Test.cs
+/Assets/Scripts/Backend/Test.exe
