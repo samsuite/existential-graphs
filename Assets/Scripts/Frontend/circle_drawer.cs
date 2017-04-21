@@ -219,7 +219,10 @@ public class circle_drawer : MonoBehaviour {
 
                 }
                 else {
-                    transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).deltaPosition);
+                    Vector3 touch_pos = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
+                    transform.position = (current_touches[0].center_start_pos - current_touches[0].start_pos) + touch_pos;
+
+                    //transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).deltaPosition);
                 }
             }
 
