@@ -34,9 +34,22 @@ public class circle_drawer : MonoBehaviour {
     Vector3 mouse_start_pos = new Vector3();
     Vector3 center_start_pos = new Vector3();
 
+    float dist_between_points;
+    float initial_dist1;
+    float initial_dist2;
+    float initial_radius;
+
+    public Transform pos_1;
+    public Transform pos_2;
+
 	void Start () {
         lines = GetComponent<LineRenderer>();
 		redraw_circle();
+
+        dist_between_points = Vector2.Distance(pos_1.position, pos_2.position);
+        initial_dist1 = Vector2.Distance(pos_1.position, transform.position);
+        initial_dist2 = Vector2.Distance(pos_2.position, transform.position);
+        initial_radius = radius;
 	}
 
     void Update () {
@@ -45,60 +58,89 @@ public class circle_drawer : MonoBehaviour {
 
         ///////////// just for testing
 
+        Vector3 touchpos1 = pos_1.position;
+        Vector3 touchpos2 = pos_2.position;
+
+        float current_dist_between_points = Vector2.Distance(touchpos1, touchpos2);
+        float dist_ratio = current_dist_between_points/dist_between_points;
+
+        float current_dist1 = Vector2.Distance(touchpos1, transform.position);
+        float current_dist2 = Vector2.Distance(touchpos2, transform.position);
+
+        float desired_dist1 = current_dist1*dist_ratio;
+        float desired_dist2 = current_dist2*dist_ratio;
+
+        // radius = initial_radius*dist_ratio;
+
+
+
+
+        // ok now we need to get the point based on the intersection of the circles
+
+        // (x - pos_1.x)^2 + (y - pos_1.y)^2 = desired_dist1^2
+        // (x - pos_2.x)^2 + (y - pos_2.y)^2 = desired_dist2^2
+
+        // x^2 - 2*pos_1.x*x + pos_1.x^2 + y^2 - 2*pos_1.y*y + pos_1.y^2 = desired_dist1^2
+        // x^2 - 2*pos_2.x*x + pos_2.x^2 + y^2 - 2*pos_2.y*y + pos_2.y^2 = desired_dist2^2
+
+
+        // 2*pos_2.x*x - 2*pos_1.x*x + pos_1.x^2 - pos_2.x^2 + 2*pos_2.y*y - 2*pos_1.y*y + pos_1.y^2 - pos_2.y^2 = desired_dist1^2 - desired_dist2^2
+        // 2*pos_2.x*x - 2*pos_1.x*x + 2*pos_2.y*y - 2*pos_1.y*y = desired_dist1^2 - desired_dist2^2 + pos_2.y^2 - pos_1.y^2 + pos_2.x^2 - pos_1.x^2
+
+
+        // (2*pos_2.x - 2*pos_1.x)*x + (2*pos_2.y - 2*pos_1.y)*y = (desired_dist1^2 - desired_dist2^2 + pos_2.y^2 - pos_1.y^2 + pos_2.x^2 - pos_1.x^2)
+
+        float x_coefficient = (2*touchpos2.x - 2*touchpos1.x);
+        float y_coefficient = (2*touchpos2.y - 2*touchpos1.y);
+        float rad_out = Mathf.Pow(desired_dist1, 2) - Mathf.Pow(desired_dist2, 2) + Mathf.Pow(touchpos2.y,2) - Mathf.Pow(touchpos1.y,2) + Mathf.Pow(touchpos2.x,2) - Mathf.Pow(touchpos1.x,2);
+
+        // x_coefficient * x + y_coefficient * y = rad_out
+        // x = (rad_out / x_coefficient) - (y_coefficient/x_coefficient) * y
+
+        float rad_over_x = rad_out / x_coefficient;
+        float coeff_rat = y_coefficient/x_coefficient;
+
+        // x = (rad_over_x - coeff_rat * y)
+
+        // (rad_over_x - coeff_rat*y)^2 - 2*pos_1.x*(rad_over_x - coeff_rat * y) + pos_1.x^2 + y^2 - 2*pos_1.y*y + pos_1.y^2 = desired_dist1^2
+
+        // (rad_over_x^2) - (2*rad_over_x*coeff_rat)*y + (coeff_rat^2)*y^2
+
+
         /*
 
-        if (Input.GetMouseButtonDown(0)) {
+        Vector2 touchvec0 = (radius*Vector3.up).normalized; //current_touches[0].start_pos - current_touches[0].center_start_pos;
+        Vector2 touchvec1 = (mouse_start_pos - center_start_pos).normalized;
 
-            mouse_start_pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            center_start_pos = transform.position;
+        print ("mouse_start_pos: "+ mouse_start_pos + "   center_start_pos: " + center_start_pos);
 
-            if (Mathf.Abs(Vector2.Distance(transform.position, mouse_start_pos) - radius) < node_manager.selection_width) {
-                clicking = true;
-            }
-        }
+        Debug.DrawLine(transform.position, touchpos1, Color.red);
 
-        if (!Input.GetMouseButton(0)) {
-            clicking = false;
-        }
-
-        if (clicking) {
-
-            Vector3 touchpos0 = transform.position + radius*Vector3.up;
-            Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            Vector2 touchvec0 = (radius*Vector3.up).normalized; //current_touches[0].start_pos - current_touches[0].center_start_pos;
-            Vector2 touchvec1 = (mouse_start_pos - center_start_pos).normalized;
-
-            print ("mouse_start_pos: "+ mouse_start_pos + "   center_start_pos: " + center_start_pos);
-
-            Debug.DrawLine(transform.position, touchpos1, Color.red);
-
-            Debug.DrawRay(transform.position, touchvec0*100f, Color.blue);
-            Debug.DrawRay(transform.position, touchvec1*100f, Color.yellow);
+        Debug.DrawRay(transform.position, touchvec0*100f, Color.blue);
+        Debug.DrawRay(transform.position, touchvec1*100f, Color.yellow);
                 
-            float angle = Vector2.Angle(touchvec0, touchvec1);
-            float theta = 180f - (angle/2f + 90f);
-            float dist_to_center = (Vector3.Distance(touchpos0, touchpos1)/2f) * Mathf.Tan(theta);
+        float angle = Vector2.Angle(touchvec0, touchvec1);
+        float theta = 180f - (angle/2f + 90f);
+        float dist_to_center = (Vector3.Distance(touchpos0, touchpos1)/2f) * Mathf.Tan(theta);
 
-            Vector3 midpoint = (touchpos0 - touchpos1)/2f + touchpos1;
-            Vector3 toward_center = Vector3.Cross(touchpos1 - touchpos0, Vector3.forward).normalized;
-            Vector3 center_point = midpoint + (toward_center * dist_to_center);
+        Vector3 midpoint = (touchpos0 - touchpos1)/2f + touchpos1;
+        Vector3 toward_center = Vector3.Cross(touchpos1 - touchpos0, Vector3.forward).normalized;
+        Vector3 center_point = midpoint + (toward_center * dist_to_center);
 
 
-            touchpos0.z = 0f;
-            touchpos1.z = 0f;
-            center_point.z = 0f;
+        touchpos0.z = 0f;
+        touchpos1.z = 0f;
+        center_point.z = 0f;
 
-            Debug.DrawRay(midpoint, toward_center*10f, Color.green);
+        Debug.DrawRay(midpoint, toward_center*10f, Color.green);
 
-            transform.position = center_point;
-            radius = Vector3.Distance(touchpos0, center_point);
-        }
-
+        transform.position = center_point;
+        radius = Vector3.Distance(touchpos0, center_point);*/
+ 
 
         ////////////////////////////////
 
-        */
+        
 
 
         if (node_manager.mode == node_manager.input_mode.touch) {
@@ -141,7 +183,7 @@ public class circle_drawer : MonoBehaviour {
 
             if (current_touches.Count >= 2) {
                 // if we have at least 2 touches, we'll scale. we're only going to pay attention to the first 2 touches.
-                
+                /*
                 Vector3 touchpos0 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
                 Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[1].index).position);
 
@@ -164,7 +206,7 @@ public class circle_drawer : MonoBehaviour {
 
                 transform.position = center_point;
                 radius = Vector3.Distance(touchpos0, center_point);
-
+                */
             }
             else if (current_touches.Count == 1) {
                 // if we just have 1 touch, we'll drag.
