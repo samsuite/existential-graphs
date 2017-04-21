@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class active_hightlight : MonoBehaviour {
+public class active_highlight : MonoBehaviour {
 
-    static Button my_button;
+    Button my_button;
 
     static Color normal_color;
     static Color highlight_color;
@@ -32,7 +32,7 @@ public class active_hightlight : MonoBehaviour {
         my_button.colors = cb;
     }
 
-    public void DisableHightlight()
+    public void DisableHighlight()
     {
         ColorBlock cb = my_button.colors;
         cb.normalColor = normal_color;

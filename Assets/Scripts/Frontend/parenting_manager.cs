@@ -69,7 +69,7 @@ public class parenting_manager : MonoBehaviour
         print("Switched parenting from " + parenting.ToString() + " to " + (!parenting).ToString());
         parenting = !parenting;
 
-        active_hightlight ah = parenting_button.GetComponent<active_hightlight>();
+        active_highlight ah = parenting_button.GetComponent<active_highlight>();
 
         if(parenting)
         {
@@ -77,7 +77,7 @@ public class parenting_manager : MonoBehaviour
         }
         else
         {
-            ah.DisableHightlight();
+            ah.DisableHighlight();
         }
     }
 

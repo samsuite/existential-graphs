@@ -12,6 +12,8 @@ public class node_manager : MonoBehaviour {
     public input_mode mode_in;
     public static input_mode mode;
 
+    public active_highlight select_highlight;
+
     public static List<circle_drawer> all_cuts = new List<circle_drawer>();
     public static List<variable_drawer> all_vars = new List<variable_drawer>();
 
@@ -39,6 +41,9 @@ public class node_manager : MonoBehaviour {
     public const float variable_selection_radius = 0.25f;
 
 	public static bool on_button = false;
+    public static bool select_mode_on = false;
+
+    public static List <GameObject> selected_objects = new List<GameObject>();
 
     void Awake () {
         circle_prefab = circle_prefab_in;
@@ -185,6 +190,19 @@ public class node_manager : MonoBehaviour {
 
     }
 
+
+    public void toggle_select_mode ()
+    {
+        if (select_mode_on) {
+            select_highlight.DisableHighlight();
+            selected_objects.Clear();
+        }
+        else {
+            select_highlight.EnableHighlight();
+        }
+
+        select_mode_on = !select_mode_on;
+    }
 
     // put a new circle in the scene
     public static circle_drawer AddCircle(Vector2 pos, float radius = min_circle_radius)
