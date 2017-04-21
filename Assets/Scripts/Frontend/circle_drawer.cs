@@ -54,12 +54,6 @@ public class circle_drawer : MonoBehaviour {
 		redraw_circle();
 	}
 
-    void OnDrawGizmosSelected() {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(pos_1.position, desired_dist1);
-        Gizmos.DrawWireSphere(pos_2.position, desired_dist2);
-    }
-
     void Update () {
 
         ///////////// just for testing
@@ -105,7 +99,6 @@ public class circle_drawer : MonoBehaviour {
 
         radius = initial_radius*dist_ratio;
         */
-        
 
 
         if (node_manager.mode == node_manager.input_mode.touch) {
@@ -119,7 +112,7 @@ public class circle_drawer : MonoBehaviour {
 
                     Vector3 touchpos = Camera.main.ScreenToWorldPoint(Input.GetTouch(i).position);
 
-                    if (Mathf.Abs(Vector2.Distance(transform.position, touchpos) - radius) < node_manager.selection_width) {
+                    if (Vector2.Distance(transform.position, touchpos) < radius) {
 
                         touch_data temp = new touch_data();
                         temp.index = i;
@@ -163,7 +156,7 @@ public class circle_drawer : MonoBehaviour {
             }
 
 
-            if (current_touches.Count >= 2) {
+            if (current_touches.Count >= 2 && !node_manager.select_mode_on) {
                 // if we have at least 2 touches, we'll scale. we're only going to pay attention to the first 2 touches.
                 
                 Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
@@ -209,12 +202,25 @@ public class circle_drawer : MonoBehaviour {
                 radius = initial_radius*dist_ratio;
 
             }
-            else if (current_touches.Count == 1) {
-                // if we just have 1 touch, we'll drag.
+            else if (current_touches.Count > 0) {
+                // otherwise (as long as we have at least 1 touch), we'll drag.
 
-                Vector3 touchpos = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
-                transform.position = (current_touches[0].center_start_pos - current_touches[0].start_pos) + touchpos;
+                // is select mode on?
+                if (node_manager.select_mode_on) {
+                    // if this object isn't already in the list of selected objects
+                    if (!node_manager.selected_objects.Contains(gameObject)) {
+                        // add it
+                        node_manager.selected_objects.Add(gameObject);
+                    }
 
+                    for (int i = 0; i < node_manager.selected_objects.Count; i++) {
+                        node_manager.selected_objects[i].transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).deltaPosition);
+                    }
+
+                }
+                else {
+                    transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).deltaPosition);
+                }
             }
 
 
@@ -240,6 +246,15 @@ public class circle_drawer : MonoBehaviour {
         }
         else {
             set_color(normal_color);
+        }
+
+        // is select mode on?
+        if (node_manager.select_mode_on) {
+            // is this object in the list of selected objects?
+
+            if (node_manager.selected_objects.Contains(gameObject)) {
+                set_color(highlighted_color);
+            }
         }
 
         // check if we're intersecting with a cut
