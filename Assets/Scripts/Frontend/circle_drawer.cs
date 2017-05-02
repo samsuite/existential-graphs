@@ -5,12 +5,6 @@ using UnityEngine;
 [RequireComponent (typeof (LineRenderer))]
 public class circle_drawer : MonoBehaviour {
 
-    public struct touch_data {
-        public int index;                   // the index of this touch
-        public Vector3 start_pos;           // the starting position of this touch
-        public Vector3 center_start_pos;    // the position of the center of the circle when this touch starts
-    }
-
     public float radius = 1;
     public int num_points = 100;
     //public Vector2 center = Vector2.zero;
@@ -29,11 +23,8 @@ public class circle_drawer : MonoBehaviour {
     public Color error_color = Color.red;
     public Color highlighted_error_color = Color.magenta;
 
-    List<touch_data> current_touches = new List<touch_data>();
-
     Vector3 mouse_start_pos = new Vector3();
     Vector3 center_start_pos = new Vector3();
-
 
 
     float dist_between_points;
@@ -48,6 +39,8 @@ public class circle_drawer : MonoBehaviour {
     float desired_dist1;
     float desired_dist2;
 
+    List<touch_data> my_touches = new List<touch_data>();
+
 
 	void Start () {
         lines = GetComponent<LineRenderer>();
@@ -56,96 +49,25 @@ public class circle_drawer : MonoBehaviour {
 
     void Update () {
 
-        ///////////// just for testing
-        /*
-        Vector3 touchpos1 = pos_1.position;
-        Vector3 touchpos2 = pos_2.position;
-
-        float current_dist_between_points = Vector2.Distance(touchpos1, touchpos2);
-        float dist_ratio = current_dist_between_points/dist_between_points;
-
-        float current_dist1 = Vector2.Distance(touchpos1, transform.position);
-        float current_dist2 = Vector2.Distance(touchpos2, transform.position);
-
-        desired_dist1 = initial_dist1*dist_ratio;
-        desired_dist2 = initial_dist2*dist_ratio;
-
-
-        // ok now we need to get the point based on the intersection of the circles
-
-        Vector3 a_unit = (touchpos2 - touchpos1).normalized;
-        Vector3 b_unit = -a_unit;
-        Vector3 h_unit = Vector3.Cross(a_unit, Vector3.forward).normalized;
-
-        float a_dist = (Mathf.Pow(desired_dist1, 2) - Mathf.Pow(desired_dist2, 2) + Mathf.Pow(current_dist_between_points, 2))/(2*current_dist_between_points);
-        float h_dist = Mathf.Sqrt(Mathf.Pow(desired_dist1, 2) - Mathf.Pow(a_dist, 2));
-
-        Vector3 newpos_1 = touchpos1 + (a_dist*a_unit) + (h_dist*h_unit);
-        Vector3 newpos_2 = touchpos1 + (a_dist*a_unit) - (h_dist*h_unit);
-
-        float newangle_1 = signed_angle((touchpos1-newpos_1), (touchpos2-newpos_1), Vector3.forward);
-        float newangle_2 = signed_angle((touchpos1-newpos_2), (touchpos2-newpos_2), Vector3.forward);
-
-        print("angle 1:  " + newangle_1);
-        print("angle 2:  " + newangle_2);
-
-
-        if (initial_angle < 0 == newangle_1 < 0) {
-            transform.position = newpos_1;
-        }
-        else {
-            transform.position = newpos_2;
-        }
-
-        radius = initial_radius*dist_ratio;
-        */
-
+        print(transform.position);
 
         if (node_manager.mode == node_manager.input_mode.touch) {
 
-            int num_old_touches = current_touches.Count;
+            int num_old_touches = my_touches.Count;
+            my_touches.Clear();
 
-            // look through every touch on the screen.
-            // if it began this frame and it is on this circle, add it to the list of current touches
-            for (int i = 0; i < Input.touchCount; i++) {
-                if (Input.GetTouch(i).phase == TouchPhase.Began) {
-
-                    Vector3 touchpos = Camera.main.ScreenToWorldPoint(Input.GetTouch(i).position);
-
-                    if (Vector2.Distance(transform.position, touchpos) < radius) {
-
-                        touch_data temp = new touch_data();
-                        temp.index = i;
-                        temp.start_pos = touchpos;
-                        temp.center_start_pos = transform.position;
-
-                        current_touches.Add(temp);
-                    }
+            for (int i = 0; i < touch_manager.current_touches.Count; i++) {
+                if (touch_manager.current_touches[i].my_obj == this.gameObject) {
+                    my_touches.Add(touch_manager.current_touches[i]);
                 }
             }
-
-            
-
-            // look through every current touch. if it's been cancelled or finished, remove it from the list
-            List<touch_data> new_touches = new List<touch_data>();
-            for (int i = 0; i < current_touches.Count; i++) {
-                if (Input.GetTouch(current_touches[i].index).phase == TouchPhase.Ended || Input.GetTouch(current_touches[i].index).phase == TouchPhase.Canceled) {
-                    // this touch is over.
-                    // don't add it to the list
-                }
-                else {
-                    new_touches.Add(current_touches[i]);
-                }
-            }
-
-            current_touches = new_touches;
 
             // if we now have 2 touches and we didn't before
-            if (current_touches.Count == 2 && num_old_touches != 2) {
+            if (my_touches.Count == 2 && num_old_touches != 2) {
                 // if this was the second touch you added
 
-                Vector3 touch1_pos = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
-                Vector3 touch2_pos = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[1].index).position);
+                Vector3 touch1_pos = Camera.main.ScreenToWorldPoint(Input.GetTouch(my_touches[0].index).position);
+                Vector3 touch2_pos = Camera.main.ScreenToWorldPoint(Input.GetTouch(my_touches[1].index).position);
 
                 dist_between_points = Vector2.Distance(touch1_pos, touch2_pos);
                 initial_dist1 = Vector2.Distance(touch1_pos, transform.position);
@@ -156,11 +78,13 @@ public class circle_drawer : MonoBehaviour {
             }
 
 
-            if (current_touches.Count >= 2 && !node_manager.select_mode_on) {
+            if (my_touches.Count >= 2 && !node_manager.select_mode_on) {
                 // if we have at least 2 touches, we'll scale. we're only going to pay attention to the first 2 touches.
                 
-                Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
-                Vector3 touchpos2 = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[1].index).position);
+                Vector3 touchpos1 = Camera.main.ScreenToWorldPoint(Input.GetTouch(my_touches[0].index).position);
+                Vector3 touchpos2 = Camera.main.ScreenToWorldPoint(Input.GetTouch(my_touches[1].index).position);
+                touchpos1.z = 0;
+                touchpos2.z = 0;
 
 
                 float current_dist_between_points = Vector2.Distance(touchpos1, touchpos2);
@@ -184,25 +108,40 @@ public class circle_drawer : MonoBehaviour {
 
                 Vector3 newpos_1 = touchpos1 + (a_dist*a_unit) + (h_dist*h_unit);
                 Vector3 newpos_2 = touchpos1 + (a_dist*a_unit) - (h_dist*h_unit);
+                newpos_1.z = 0;
+                newpos_2.z = 0;
 
                 float newangle_1 = signed_angle((touchpos1-newpos_1), (touchpos2-newpos_1), Vector3.forward);
                 float newangle_2 = signed_angle((touchpos1-newpos_2), (touchpos2-newpos_2), Vector3.forward);
 
-                print("angle 1:  " + newangle_1);
-                print("angle 2:  " + newangle_2);
+                //print("angle 1:  " + newangle_1);
+                //print("angle 2:  " + newangle_2);
 
 
                 if (initial_angle < 0 == newangle_1 < 0) {
-                    transform.position = newpos_1;
+                    if (!float.IsNaN(newpos_1.x) && !float.IsNaN(newpos_1.y) ) {
+                        transform.position = newpos_1;
+                    }
                 }
                 else {
-                    transform.position = newpos_2;
+                    if (!float.IsNaN(newpos_2.x) && !float.IsNaN(newpos_2.y) ) {
+                        transform.position = newpos_2;
+                    }
                 }
 
-                radius = initial_radius*dist_ratio;
+                if (initial_radius*dist_ratio > node_manager.min_circle_radius) {
+                    radius = initial_radius*dist_ratio;
+                }
+
+
+                my_touches[0].start_pos = touchpos1;
+                my_touches[0].center_start_pos = transform.position;
+
+                my_touches[1].start_pos = touchpos2;
+                my_touches[1].center_start_pos = transform.position;
 
             }
-            else if (current_touches.Count > 0) {
+            else if (my_touches.Count > 0) {
                 // otherwise (as long as we have at least 1 touch), we'll drag.
 
                 // is select mode on?
@@ -214,14 +153,15 @@ public class circle_drawer : MonoBehaviour {
                     }
 
                     for (int i = 0; i < node_manager.selected_objects.Count; i++) {
-                        node_manager.selected_objects[i].transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).deltaPosition);
+                        node_manager.selected_objects[i].transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(my_touches[0].index).deltaPosition);
                     }
 
                 }
                 else {
-                    Vector3 touch_pos = Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).position);
-                    transform.position = (current_touches[0].center_start_pos - current_touches[0].start_pos) + touch_pos;
+                    Vector3 touch_pos = Camera.main.ScreenToWorldPoint(Input.GetTouch(my_touches[0].index).position);
+                    transform.position = (my_touches[0].center_start_pos - my_touches[0].start_pos) + touch_pos;
 
+                    transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
                     //transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).deltaPosition);
                 }
             }
@@ -236,7 +176,7 @@ public class circle_drawer : MonoBehaviour {
 
         if (intersecting){
 
-            if (node_manager.currently_selected_circle == this || current_touches.Count > 0){
+            if ((node_manager.mode == node_manager.input_mode.mouse && node_manager.currently_selected_circle == this) || (node_manager.mode == node_manager.input_mode.touch && my_touches.Count > 0)){
                 set_color(highlighted_error_color);
             }
             else {
@@ -244,7 +184,7 @@ public class circle_drawer : MonoBehaviour {
             }
 
         }
-        else if (node_manager.currently_selected_circle == this || current_touches.Count > 0){
+        else if ((node_manager.mode == node_manager.input_mode.mouse && node_manager.currently_selected_circle == this) || (node_manager.mode == node_manager.input_mode.touch && my_touches.Count > 0)){
             set_color(highlighted_color);
         }
         else {
