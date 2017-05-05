@@ -54,9 +54,11 @@ public class touch_manager : MonoBehaviour {
                         }
                     }
                     
-                    if (temp.my_obj) {
-                        temp.center_start_pos = temp.my_obj.transform.position;
-                    }
+					if (!temp.my_obj) {
+						//temp.my_obj = Camera.main.gameObject;
+					} else {
+						temp.center_start_pos = temp.my_obj.transform.position;
+					}
 
                     current_touches.Add(temp);
                 }

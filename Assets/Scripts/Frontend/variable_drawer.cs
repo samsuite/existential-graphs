@@ -31,6 +31,16 @@ public class variable_drawer : MonoBehaviour {
                 }
             }
 
+			// check to parent everything back again in the parenting modular time period mode
+			if (my_touches.Count == 0 && num_old_touches > 0)
+			{
+				// reparent everything when in parenting mode
+				if (parenting_manager.parenting)
+				{
+					parenting_manager.ParentAll();
+				}
+			}
+
             if (my_touches.Count > 0) {
                 // as long as we have at least 1 touch, we'll drag.
 

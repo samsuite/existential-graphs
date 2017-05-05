@@ -49,7 +49,7 @@ public class circle_drawer : MonoBehaviour {
 
     void Update () {
 
-        print(transform.position);
+        //print(transform.position);
 
         if (node_manager.mode == node_manager.input_mode.touch) {
 
@@ -76,6 +76,16 @@ public class circle_drawer : MonoBehaviour {
 
                 initial_angle = signed_angle((touch1_pos-transform.position), (touch2_pos-transform.position), Vector3.forward);
             }
+
+			// check to parent everything back again in the parenting modular time period mode
+			if (my_touches.Count == 0 && num_old_touches > 0)
+			{
+				// reparent everything when in parenting mode
+				if (parenting_manager.parenting)
+				{
+					parenting_manager.ParentAll();
+				}
+			}
 
 
             if (my_touches.Count >= 2 && !node_manager.select_mode_on) {
@@ -165,8 +175,6 @@ public class circle_drawer : MonoBehaviour {
                     //transform.position += Camera.main.ScreenToWorldPoint(Input.GetTouch(current_touches[0].index).deltaPosition);
                 }
             }
-
-
         }
 
 

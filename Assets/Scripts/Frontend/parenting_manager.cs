@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,11 +42,11 @@ public class parenting_manager : MonoBehaviour
     {
         prev_state = curr_state;
         
-        print("current state: " + curr_state);
-        print("prev state: " + prev_state);
+        //print("current state: " + curr_state);
+        //print("prev state: " + prev_state);
 
         curr_state = ConvertToTree();
-        print("Converted scene to ISONode");
+        //print("Converted scene to ISONode");
         
         print("current state: " + curr_state);
 
@@ -194,7 +194,7 @@ public class parenting_manager : MonoBehaviour
         {
             if (v.intersecting)
             {
-                print("Can't enter parent mode -- you have cuts that are intersecting");
+                print("Can't enter parent mode -- you have variables that are intersecting");
                 return false;
             }
         }

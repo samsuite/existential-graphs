@@ -100,7 +100,8 @@ public class node_manager : MonoBehaviour {
                 currently_selected_variable.transform.position = new Vector3(offset.x+mouse_position.x, offset.y+mouse_position.y, 0f);
 
                 // if the player releases the left mouse button
-                if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1)){
+                if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+				{
                     currently_moving_var = false;
                     
                     // reparent everything when in parenting mode
@@ -116,12 +117,16 @@ public class node_manager : MonoBehaviour {
                 // is the mouse on the edge of a circle or variable? if so, select it. variables have priority over circles
                 currently_selected_circle = null;
                 currently_selected_variable = null;
+
+				all_cuts.Sort (compare_circle_size);
+
                 for( int i = 0; i < all_cuts.Count; i++ )
                 {
                     circle_drawer cir = all_cuts[i];
                     Vector2 center = new Vector2(cir.transform.position.x, cir.transform.position.y);
 
-                    if( Vector2.Distance(center, mouse_position) < cir.radius ) {
+                    if( Vector2.Distance(center, mouse_position) < cir.radius )
+					{
                         currently_selected_circle = cir;
                     }
                 }
@@ -131,7 +136,8 @@ public class node_manager : MonoBehaviour {
                     variable_drawer var = all_vars[i];
                     Vector2 center = new Vector2(var.transform.position.x, var.transform.position.y);
 
-                    if( Vector2.Distance(center, mouse_position) < variable_selection_radius ) {
+                    if( Vector2.Distance(center, mouse_position) < variable_selection_radius )
+					{
                         currently_selected_variable = var;
                         currently_selected_circle = null;   // even if we are over a circle, we're over a variable so we don't care lol. deselect the circle
                     }
@@ -178,17 +184,48 @@ public class node_manager : MonoBehaviour {
                 if (Input.GetMouseButtonDown(2)){
                     // we middle-clicked. do we have anything selected? if so, delete it
 
-                    if (currently_selected_circle) {
+                    if (currently_selected_circle)
+					{
                         RemoveCircle(currently_selected_circle);
+
+						// reparent everything when in parenting mode
+						if (parenting_manager.parenting)
+						{
+							parenting_manager.ParentAll();
+						}
                     }
-                    else if (currently_selected_variable) {
+                    else if (currently_selected_variable)
+					{
                         RemoveVariable(currently_selected_variable);
+
+						// reparent everything when in parenting mode
+						if (parenting_manager.parenting)
+						{
+							parenting_manager.ParentAll();
+						}
                     }
                 }
             }
         }
 
     }
+
+
+	private static int compare_circle_size(circle_drawer x, circle_drawer y)
+	{
+		// if x is greater, return 1
+		// if y is greater, return -1
+		// if they're equal, return 0
+		if (x.radius > y.radius) {
+			return -1;
+		}
+		else if (y.radius > x.radius) {
+			return 1;
+		}
+		return 0;
+	}
+
+
 
 
     public void toggle_select_mode ()
@@ -275,31 +312,45 @@ public class node_manager : MonoBehaviour {
 		on_button = false;
 	}
 
-    // delete a circle and remove it from the list
-    public static void RemoveCircle(circle_drawer cir)
-    {
-        all_cuts.Remove(cir);
-        Destroy(cir.gameObject);
-    }
+	// delete a circle and remove it from the list. recurse through children to make sure we don't orphan anyone
+	public static void RemoveCircle(circle_drawer cir)
+	{
+		for (int i = 0; i < cir.transform.childCount; i++) {
 
-    // delete a variable and remove it from the list
-    public static void RemoveVariable(variable_drawer var)
-    {
-        all_vars.Remove(var);
-        Destroy(var.gameObject);
-    }
+			circle_drawer child_cut = cir.transform.GetChild(i).GetComponent<circle_drawer>();
+			if (child_cut) {
+				RemoveCircle(child_cut);
+			}
 
-    // clear all cuts and vars from the scene
-    public static void EraseAll()
-    {
-        // have to delete in reverse order so we don't mess with the indices as we clear out the lists
-        for (int i = all_vars.Count-1; i >= 0; i--) {
-            RemoveVariable(all_vars[i]);
-        }
-        for (int i = all_cuts.Count-1; i >= 0; i--) {
-            RemoveCircle(all_cuts[i]);
-        }
-    }
+			variable_drawer child_var = cir.transform.GetChild(i).GetComponent<variable_drawer>();
+			if (child_var) {
+				RemoveVariable(child_var);
+			}
+
+		}
+
+
+		all_cuts.Remove(cir);
+		Destroy(cir.gameObject);
+	}
+
+	// delete a variable and remove it from the list
+	public static void RemoveVariable(variable_drawer var)
+	{
+		all_vars.Remove(var);
+		Destroy(var.gameObject);
+	}
+
+	// clear all cuts and vars from the scene
+	public static void EraseAll()
+	{
+		while (all_vars.Count > 0) {
+			RemoveVariable(all_vars[0]);
+		}
+		while (all_cuts.Count > 0) {
+			RemoveCircle(all_cuts[0]);
+		}
+	}
 
     // does this other circle intersect with this other circle?
     public static bool intersect (circle_drawer cir_a, circle_drawer cir_b){
