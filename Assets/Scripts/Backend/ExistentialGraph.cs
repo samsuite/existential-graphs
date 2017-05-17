@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-
+using UnityEngine;
 
 public abstract class ExistentialGraph
 {
@@ -14,7 +14,6 @@ public abstract class ExistentialGraph
     public abstract bool Is_Leaf();
     public abstract bool Has_Nested_Subgraphs();
     public abstract List<ExistentialGraph> Get_Immediate_Subgraphs();
-    public abstract List<ExistentialGraph> Get_All_Subgraphs();
     public abstract void Add_Subgraph(ExistentialGraph g);
 
     public ExistentialGraph Get_Parent()
@@ -32,14 +31,16 @@ public abstract class ExistentialGraph
     public bool Exists_In_Upper_Subgraph()
     {
 
-        ExistentialGraph parent = this.Get_Parent();
-        List<ExistentialGraph> parent_children = parent.Get_Immediate_Subgraphs();
-
-        if (parent_children.Where(child => this.Equals(child)).Count() > 1)
-            return true;
-
+		if(this.Level() <= 2)
+			return false;
+	
+        ExistentialGraph parent = this.Get_Parent().Get_Parent();
+	
+		List<ExistentialGraph> parent_children = new List<ExistentialGraph>();
+		
         while (parent.Get_Parent() != null)
         {
+
             parent = parent.Get_Parent();
             parent_children = parent.Get_Immediate_Subgraphs();
 
@@ -57,7 +58,7 @@ public abstract class ExistentialGraph
 
     public bool Exists_In_Level()
     {
-        return this.Get_Parent().Get_Immediate_Subgraphs().Where(subgraph => this.Equals(subgraph)).Count() > 1;
+        return this.Get_Parent().Get_Immediate_Subgraphs().Where(subgraph => this.Equals(subgraph)).Count() >= 1;
     }
 
     private int Num_Cuts()
@@ -175,10 +176,7 @@ public abstract class ExistentialGraph
             return this.subgraphs;
         }
 
-        public override List<ExistentialGraph> Get_All_Subgraphs()
-        {
-            return this.subgraphs;
-        }
+   
 
         public override void Add_Subgraph(ExistentialGraph g)
         {
@@ -223,10 +221,6 @@ public abstract class ExistentialGraph
             throw new Exception("Var doesn't have subgraphs other than itself.");
         }
 
-        public override List<ExistentialGraph> Get_All_Subgraphs()
-        {
-            return new List<ExistentialGraph>() { this };
-        }
         public override void Add_Subgraph(ExistentialGraph g)
         {
             throw new Exception("Var can't have child subgraphs!");

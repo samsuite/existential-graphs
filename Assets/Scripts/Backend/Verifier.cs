@@ -26,7 +26,8 @@ public class Verifier : MonoBehaviour
             try
             {
                 Pair<ExistentialGraph, ExistentialGraph> difp = c.Find_Difference_Between(par.prev_state, par.curr_state);
-                if (c.Is_Double_Cut(difp.item1, difp.item2)) {
+
+				if (c.A_DC_Exists(difp.item1, difp.item2)) {
                     Debug.Log("It's a Double Cut!");
                     output_text.text = "It's a Double Cut!";
                 }
@@ -53,9 +54,15 @@ public class Verifier : MonoBehaviour
             }
             catch (Exception e)
             {
+				Debug.Log("EXCEPTION?" + e.ToString());
                 return;
             }
 
+        }
+        else
+        {
+            Debug.Log("It's Identity!");
+            //output_text.text = "It's Identity!";
         }
     }
 
