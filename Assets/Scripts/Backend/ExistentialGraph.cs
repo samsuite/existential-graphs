@@ -23,7 +23,8 @@ public abstract class ExistentialGraph
 
     public string Label()
     {
-        this.Assign_Label();
+	
+		this.Assign_Label();
         return this.label;
     }
 
@@ -218,7 +219,7 @@ public abstract class ExistentialGraph
 
         public override List<ExistentialGraph> Get_Immediate_Subgraphs()
         {
-            throw new Exception("Var doesn't have subgraphs other than itself.");
+            return new List<ExistentialGraph>();
         }
 
         public override void Add_Subgraph(ExistentialGraph g)

@@ -21,40 +21,47 @@ public class Verifier : MonoBehaviour
 
         par.ConvertAndPrint();
         AlphaChecker c = new AlphaChecker();
+		
+		
+		
         if (!par.prev_state.Equals(par.curr_state))
         {
             try
             {
+				Debug.Log("Getting difference points");
+				
                 Pair<ExistentialGraph, ExistentialGraph> difp = c.Find_Difference_Between(par.prev_state, par.curr_state);
-
-		if (c.A_DC_Exists(difp.item1, difp.item2)) {
-                    Debug.Log("It's a Double Cut!");
-                    output_text.text = "Double Cut";
-                }
-                else if (c.Is_Iteration(difp.item1, difp.item2)) {
-                    Debug.Log("It's Iteration!");
-                    output_text.text = "Iteration";
-                }
-                else if (c.Is_Deiteration(difp.item1, difp.item2)) {
-                    Debug.Log("It's Deiteration!");
-                    output_text.text = "Deiteration";
-                }
-                else if (c.Is_Insertion(difp.item1, difp.item2)) {
-                    Debug.Log("It's Insertion!");
-                    output_text.text = "Insertion";
-                }
-                else if (c.Is_Erasure(difp.item1, difp.item2)) {
-                    Debug.Log("It's Erasure!");
-                    output_text.text = "Erasure";
-                }
-                else {
-                    Debug.Log("No valid rule found!");
-                    output_text.text = "No valid rule";
-                }
+				Debug.Log(difp.item1);
+				Debug.Log(difp.item2);
+		
+				if (c.A_DC_Exists(difp.item1, difp.item2)) {
+						Debug.Log("It's a Double Cut!");
+						output_text.text = "Double Cut";
+				}
+				else if (c.Is_Iteration(difp.item1, difp.item2)) {
+					Debug.Log("It's Iteration!");
+					output_text.text = "Iteration";
+				}
+				else if (c.Is_Deiteration(difp.item1, difp.item2)) {
+					Debug.Log("It's Deiteration!");
+					output_text.text = "Deiteration";
+				}
+				else if (c.Is_Insertion(difp.item1, difp.item2)) {
+					Debug.Log("It's Insertion!");
+					output_text.text = "Insertion";
+				}
+				else if (c.Is_Erasure(difp.item1, difp.item2)) {
+					Debug.Log("It's Erasure!");
+					output_text.text = "Erasure";
+				}
+				else {
+					Debug.Log("No valid rule found!");
+					output_text.text = "No valid rule";
+				}
             }
             catch (Exception e)
             {
-		Debug.Log("EXCEPTION?" + e.ToString());
+				Debug.Log("EXCEPTION?" + e.ToString());
                 return;
             }
 
