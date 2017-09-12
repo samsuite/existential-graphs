@@ -290,18 +290,48 @@ public class node_manager : MonoBehaviour {
 
     }
 
-    public void ClickAddCut()
+    public void ClickAddCut(Transform start_pos = null)
 	{
-		circle_drawer new_cut = Instantiate(circle_prefab, new Vector3(mouse_position.x,mouse_position.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
-        new_cut.radius = min_circle_radius;
-        all_cuts.Add(new_cut);
+        if (mode == input_mode.mouse) {
 
-        currently_selected_circle = new_cut;
-		clicked_point = mouse_position;
+		    circle_drawer new_cut = Instantiate(circle_prefab, new Vector3(mouse_position.x,mouse_position.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
+            new_cut.radius = min_circle_radius;
+            all_cuts.Add(new_cut);
 
-        offset = new Vector2(currently_selected_circle.transform.position.x,currently_selected_circle.transform.position.y) - clicked_point;
+            currently_selected_circle = new_cut;
+		    clicked_point = mouse_position;
 
-        currently_moving_cut = true;
+            offset = new Vector2(currently_selected_circle.transform.position.x,currently_selected_circle.transform.position.y) - clicked_point;
+
+            currently_moving_cut = true;
+        }
+        else if (mode == input_mode.touch) {
+
+            circle_drawer new_cut = Instantiate(circle_prefab, new Vector3(start_pos.position.x,start_pos.position.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
+            new_cut.radius = min_circle_radius;
+            all_cuts.Add(new_cut);
+
+            for (int i = 0; i < Input.touchCount; i++) {
+
+                Touch this_touch = Input.GetTouch(i);
+                Vector3 touch_pos = Camera.main.ScreenToWorldPoint(this_touch.position);
+                touch_pos.z = 0f;
+
+                if (Vector3.Distance(touch_pos, new_cut.transform.position) < new_cut.radius) {
+
+                    touch_data new_data = new touch_data();
+                    new_data.index = i;
+                    new_data.my_obj = new_cut.gameObject;
+                    new_data.center_start_pos = new_cut.transform.position;
+                    new_data.start_pos = touch_pos;
+
+                    touch_manager.current_touches.Add(new_data);
+
+                }
+
+            }
+
+        }
 	}
 
 	public void OnButton(){
