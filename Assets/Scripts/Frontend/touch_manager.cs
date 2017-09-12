@@ -82,6 +82,27 @@ public class touch_manager : MonoBehaviour {
 
             current_touches = new_touches;
 
+
+            if (node_manager.erase_mode_on) {
+
+                for (int i = 0; i < current_touches.Count; i++) {
+
+                    circle_drawer my_circle = current_touches[i].my_obj.GetComponent<circle_drawer>();
+                    variable_drawer my_var = current_touches[i].my_obj.GetComponent<variable_drawer>();
+
+                    if (my_circle) {
+                        node_manager.RemoveCircle(my_circle);
+                    }
+                    else if (my_var) {
+                        node_manager.RemoveVariable(my_var);
+                    }
+
+                }
+
+
+                current_touches.Clear();
+            }
+
         }
 
 	}

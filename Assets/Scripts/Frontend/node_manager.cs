@@ -12,6 +12,7 @@ public class node_manager : MonoBehaviour {
     public input_mode mode_in;
     public static input_mode mode;
 
+    public active_highlight erase_highlight;
     public active_highlight select_highlight;
 
     public static List<circle_drawer> all_cuts = new List<circle_drawer>();
@@ -42,6 +43,7 @@ public class node_manager : MonoBehaviour {
 
 	public static bool on_button = false;
     public static bool select_mode_on = false;
+    public static bool erase_mode_on = false;
 
     public static List <GameObject> selected_objects = new List<GameObject>();
 
@@ -226,6 +228,17 @@ public class node_manager : MonoBehaviour {
 	}
 
 
+    public void toggle_erase_mode ()
+    {
+        if (erase_mode_on) {
+            erase_highlight.DisableHighlight();
+        }
+        else {
+            erase_highlight.EnableHighlight();
+        }
+
+        erase_mode_on = !erase_mode_on;
+    }
 
 
     public void toggle_select_mode ()
