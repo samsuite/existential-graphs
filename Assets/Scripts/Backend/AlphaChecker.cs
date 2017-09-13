@@ -298,12 +298,7 @@ public class AlphaChecker //: IInferable
     {
 		
 		Counter<ExistentialGraph> t1 = Collect_Ancestors(pre);
-		
-		foreach(ExistentialGraph g in t1.Keys())
-			Debug.Log(g);
 		Counter<ExistentialGraph> t2 = Collect_Ancestors(current);
-		foreach(ExistentialGraph g in t2.Keys())
-			Debug.Log(g);
 		List<ExistentialGraph> k1 = t1.Keys();
 		List<ExistentialGraph> k2 = t2.Keys();
 		
