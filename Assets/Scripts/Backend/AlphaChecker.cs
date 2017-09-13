@@ -118,9 +118,9 @@ public class AlphaChecker //: IInferable
 		return counts;
 	}
 	
-	private int TotalNodesInGraph(ExistentialGraph g) {
+	public int TotalNodesInGraph(ExistentialGraph g) {
 		
-		if(g.Is_Var()) {
+		if(g.Is_Leaf()) {
 			return 1;
 		}
 		
@@ -134,10 +134,11 @@ public class AlphaChecker //: IInferable
 		return count;
 		
 	}
+
 	
-	private Counter<ExistentialGraph> Collect_Leaf_Counts(ExistentialGraph g, Counter<ExistentialGraph> acc) {
+	public Counter<ExistentialGraph> Collect_Leaf_Counts(ExistentialGraph g, Counter<ExistentialGraph> acc) {
 		
-		if(g.Is_Var() || g.Is_Leaf()) {
+		if(g.Is_Leaf()) {
 			acc.Add(g);
 		}
 		
@@ -173,6 +174,7 @@ public class AlphaChecker //: IInferable
 
 		//if (Graphs_Differ_In_Contents_Not_Size(prev_step, current_step))
 			//return Pair.Make(prev_step, current_step);
+
 		
         if (A_Simple_Negation_Exists(previous_step, current_step))
             return Pair.Make(previous_step, current_step);
@@ -223,6 +225,16 @@ public class AlphaChecker //: IInferable
 
     }
 
+	public bool Is_Odd_Wrap(ExistentialGraph prev, ExistentialGraph current) {
+
+		
+		int count_prev_open_parens = prev.Label().Count(x => x == '(');
+		int count_current_open_parens = current.Label().Count(x => x == '(');	
+		
+		return Math.Abs(count_current_open_parens - count_prev_open_parens) > 0 && (Math.Abs(count_current_open_parens - count_prev_open_parens)) % 2 == 1 && (prev.Label() == "(" + current.Label() + ")" || "(" + current.Label() == prev.Label() + ")");
+		
+	}
+	
     public bool Is_Insertion(ExistentialGraph prev, ExistentialGraph current)
     {
 		if(prev.Is_On_Even_Level() && current.Is_On_Even_Level()){
@@ -276,54 +288,22 @@ public class AlphaChecker //: IInferable
 					return false;
 			}
 			
-
-			
 			return t2.TotalUniqueElements() < t1.TotalUniqueElements();
 		}
 		return false;
     }
 
-    private List<ExistentialGraph> Generate_Iteration_Candidates(ExistentialGraph current)
-    {
-		List<ExistentialGraph> candidates = new List<ExistentialGraph>();
-        foreach (ExistentialGraph g in current.Get_Immediate_Subgraphs())
-        {
-			
-            if (g.Exists_In_Upper_Subgraph())
-                candidates.Add(g);
-        }
-        return candidates;
-    }
-	
-	private List<ExistentialGraph> Add_In_Level_Candidates_Iter(ExistentialGraph g1, ExistentialGraph g2, List<ExistentialGraph> candidates)
-	{
-		foreach(ExistentialGraph g in g2.Get_Immediate_Subgraphs())
-		{
-			int count1 = g1.Get_Immediate_Subgraphs().Where(subgraph => subgraph.Equals(g)).Count();
-			int count2 = g2.Get_Immediate_Subgraphs().Where(subgraph => subgraph.Equals(g)).Count();
-			if(count2 > count1 && count1 > 0)
-				candidates.Add(g);
-		}
-		return candidates;
-	}
-
-	private List<ExistentialGraph> Add_In_Level_Candidates_DeIter(ExistentialGraph g1, ExistentialGraph g2, List<ExistentialGraph> candidates)
-	{
-		foreach(ExistentialGraph g in g1.Get_Immediate_Subgraphs())
-		{
-			int count1 = g1.Get_Immediate_Subgraphs().Where(subgraph => subgraph.Equals(g)).Count();
-			int count2 = g2.Get_Immediate_Subgraphs().Where(subgraph => subgraph.Equals(g)).Count();
-			if(count2 < count1 && count1 > 1)
-				candidates.Add(g);
-		}
-		return candidates;
-	}
 	
     public bool Is_Iteration(ExistentialGraph pre, ExistentialGraph current)
     {
 		
 		Counter<ExistentialGraph> t1 = Collect_Ancestors(pre);
+		
+		foreach(ExistentialGraph g in t1.Keys())
+			Debug.Log(g);
 		Counter<ExistentialGraph> t2 = Collect_Ancestors(current);
+		foreach(ExistentialGraph g in t2.Keys())
+			Debug.Log(g);
 		List<ExistentialGraph> k1 = t1.Keys();
 		List<ExistentialGraph> k2 = t2.Keys();
 		

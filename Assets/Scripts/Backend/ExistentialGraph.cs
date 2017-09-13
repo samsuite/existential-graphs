@@ -66,6 +66,23 @@ public abstract class ExistentialGraph
     {
         return (this.Get_Parent() == null) ? 0 : 1 + this.Get_Parent().Num_Cuts();
     }
+	
+	public int Height()
+	{
+		if(this.Is_Leaf())
+			return 0;
+		
+		int depth = 0;
+		
+		foreach(ExistentialGraph g in this.Get_Immediate_Subgraphs()){
+			
+			depth = Math.Max(depth, g.Height()) + 1;
+		}
+		
+		return depth;
+		
+	}
+	
 
     public bool Is_On_Even_Level()
     {

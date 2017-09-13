@@ -30,6 +30,22 @@ public class Verifier : MonoBehaviour
             {
 				Debug.Log("Getting difference points");
 				
+
+				if(c.TotalNodesInGraph(par.prev_state) == c.TotalNodesInGraph(par.curr_state)) {
+				
+					Counter<ExistentialGraph> prev_leaf_counts = c.Collect_Leaf_Counts(par.prev_state, new Counter<ExistentialGraph>());
+					Counter<ExistentialGraph> curr_leaf_counts = c.Collect_Leaf_Counts(par.curr_state, new Counter<ExistentialGraph>());
+					
+					foreach(ExistentialGraph key in prev_leaf_counts.Keys()) {
+						if(!curr_leaf_counts.ContainsElement(key) || curr_leaf_counts.Count(key) != prev_leaf_counts.Count(key)){
+							Debug.Log("No valid rule found!");
+							output_text.text = "No valid rule";
+							return;
+						}
+					}
+				
+				}
+				
                 Pair<ExistentialGraph, ExistentialGraph> difp = c.Find_Difference_Between(par.prev_state, par.curr_state);
 				Debug.Log(difp.item1);
 				Debug.Log(difp.item2);
