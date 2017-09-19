@@ -320,7 +320,7 @@ public class node_manager : MonoBehaviour {
         }
         else if (mode == input_mode.touch) {
 
-            circle_drawer new_cut = Instantiate(circle_prefab, new Vector3(start_pos.position.x,start_pos.position.y,0f), Quaternion.identity).GetComponent<circle_drawer>();
+            circle_drawer new_cut = Instantiate(circle_prefab, Camera.main.ScreenToWorldPoint(new Vector3(start_pos.position.x,start_pos.position.y,0f)), Quaternion.identity).GetComponent<circle_drawer>();
             new_cut.radius = min_circle_radius;
             all_cuts.Add(new_cut);
 

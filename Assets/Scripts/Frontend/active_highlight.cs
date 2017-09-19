@@ -29,6 +29,7 @@ public class active_highlight : MonoBehaviour {
     {
         ColorBlock cb = my_button.colors;
         cb.normalColor = highlight_color;
+        cb.highlightedColor = highlight_color;
         my_button.colors = cb;
     }
 
@@ -36,6 +37,7 @@ public class active_highlight : MonoBehaviour {
     {
         ColorBlock cb = my_button.colors;
         cb.normalColor = normal_color;
+        cb.highlightedColor = normal_color;
         my_button.colors = cb;
     }
 }
