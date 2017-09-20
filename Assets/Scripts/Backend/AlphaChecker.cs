@@ -94,7 +94,6 @@ public class AlphaChecker //: IInferable
     }
     private bool A_Difference_Exists(ExistentialGraph g1, ExistentialGraph g2)
     {
-		
         return g1.Get_Immediate_Subgraphs().Count != g2.Get_Immediate_Subgraphs().Count;
     }
 
@@ -102,10 +101,14 @@ public class AlphaChecker //: IInferable
 		
 		Counter<ExistentialGraph> counts = new Counter<ExistentialGraph>();
 		
-		foreach(ExistentialGraph child in sg.Get_Immediate_Subgraphs()) {
-			counts.Add(child);
-		}
-		
+
+		//if(sg.Get_Immediate_Subgraphs().Count > 1) {
+			foreach(ExistentialGraph child in sg.Get_Immediate_Subgraphs()) {
+				counts.Add(child);
+			}
+		//}
+			
+
 		ExistentialGraph parent = sg.Get_Parent();
 		
 		while(parent != null) {
@@ -225,6 +228,12 @@ public class AlphaChecker //: IInferable
 
     }
 
+    public bool Is_Inconsistent(ExistentialGraph g1, ExistentialGraph g2) {
+
+    	return g1.Is_Cut() && !g2.Is_Cut() || !g1.Is_Cut() && g2.Is_Cut();
+
+    }
+
 	public bool Is_Odd_Wrap(ExistentialGraph prev, ExistentialGraph current) {
 
 		
@@ -243,6 +252,14 @@ public class AlphaChecker //: IInferable
 			List<ExistentialGraph> P = prev.Get_Immediate_Subgraphs();
 			List<ExistentialGraph> C = current.Get_Immediate_Subgraphs();
 			
+
+			// if(prev.Get_Immediate_Subgraphs().Count == current.Get_Immediate_Subgraphs().Count) {
+			// 	return false;
+			// }
+
+			if(Is_Inconsistent(prev, current))
+				return false;
+
 			foreach(ExistentialGraph g in P) {
 				t1.Add(g);
 			}
@@ -256,10 +273,8 @@ public class AlphaChecker //: IInferable
 				if(!C.Contains(sg) || t1.Count(sg) != t2.Count(sg))
 					return false;
 			}
-			
 			//Assert that this is indeed an insertion as opposed to erasure
 			return t2.TotalUniqueElements() > t1.TotalUniqueElements();
-		
 		}
 		
 		return false;
@@ -275,6 +290,16 @@ public class AlphaChecker //: IInferable
 			List<ExistentialGraph> P = prev.Get_Immediate_Subgraphs();
 			List<ExistentialGraph> C = current.Get_Immediate_Subgraphs();
 			
+			
+
+			// if(prev.Get_Immediate_Subgraphs().Count == current.Get_Immediate_Subgraphs().Count) {
+			// 	return false;
+			// }
+
+
+			if(Is_Inconsistent(prev, current))
+				return false;
+
 			foreach(ExistentialGraph g in P) {
 				t1.Add(g);
 			}
@@ -301,7 +326,21 @@ public class AlphaChecker //: IInferable
 		Counter<ExistentialGraph> t2 = Collect_Ancestors(current);
 		List<ExistentialGraph> k1 = t1.Keys();
 		List<ExistentialGraph> k2 = t2.Keys();
-		
+		Debug.Log("Generating Pre Ancestors");
+		foreach(ExistentialGraph g in k1) {
+
+			Debug.Log(g.Label());
+		}
+
+		Debug.Log("Generating Current Ancestors");
+		foreach(ExistentialGraph g in k2) {
+
+			Debug.Log(g.Label());
+		}	
+
+
+		if(Is_Inconsistent(pre, current))
+			return false;			
 		foreach(ExistentialGraph c2 in current.Get_Immediate_Subgraphs()) {
 			if(!pre.Get_Immediate_Subgraphs().Contains(c2) && !k1.Contains(c2)){ 
 				return false;
@@ -328,7 +367,6 @@ public class AlphaChecker //: IInferable
 		}
 		
 		return true;
-
     }
 
 
@@ -337,10 +375,28 @@ public class AlphaChecker //: IInferable
 
 		Counter<ExistentialGraph> t1 = Collect_Ancestors(pre);
 		Counter<ExistentialGraph> t2 = Collect_Ancestors(current);
+
 		List<ExistentialGraph> k1 = t1.Keys();
 		List<ExistentialGraph> k2 = t2.Keys();
-				
-			
+		Debug.Log("Generating Pre Ancestors");
+		foreach(ExistentialGraph g in k1) {
+			Debug.Log(g.Label());
+		}
+
+		Debug.Log("Generating Current Ancestors");
+		foreach(ExistentialGraph g in k2) {
+
+			Debug.Log(g.Label());
+		}			
+		
+
+		Debug.Log(pre.Get_Immediate_Subgraphs().Count);
+		Debug.Log(current.Get_Immediate_Subgraphs().Count);
+
+		if(Is_Inconsistent(pre, current))
+			return false;
+
+
 		foreach(ExistentialGraph c2 in pre.Get_Immediate_Subgraphs()) {
 			if(!current.Get_Immediate_Subgraphs().Contains(c2) && !k2.Contains(c2)){ 
 				return false;
@@ -362,6 +418,8 @@ public class AlphaChecker //: IInferable
 			if(t1.Count(c1) < t2.Count(c1))
 				return false;
 		}
+
+
 		
 		return true;
     }
